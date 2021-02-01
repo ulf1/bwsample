@@ -1,0 +1,2 @@
+# public packages (see setup.py)
+numba>=0.52.0
