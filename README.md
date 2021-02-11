@@ -35,8 +35,7 @@ bwsindices =
  [15, 16, 17, 0]]
 ```
 
-The default setting is `shuffle=True` to permutate all indices before splitting the BWS sets, 
-and to shuffle each BWS set in a final step. 
+The default setting is `shuffle=True` to shuffle each BWS set in a final step. 
 Random shuffling requires approx. 5-8x more time. 
 The behavior is still maintained to display 1 example in the succeeding BWS set.
 
@@ -50,12 +49,12 @@ bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 
 ```
 bwsindices = 
-[[5, 0, 8, 1],
- [13, 16, 5, 3],
- [11, 2, 16, 15],
- [4, 9, 2, 17],
- [10, 12, 4, 7],
- [0, 10, 6, 14]]
+[[3, 1, 0, 2],
+ [4, 3, 5, 6],
+ [9, 7, 6, 8],
+ [12, 10, 9, 11],
+ [13, 12, 15, 14],
+ [16, 15, 0, 17]]
 ```
 
 
