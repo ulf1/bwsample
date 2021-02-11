@@ -29,22 +29,22 @@ def indices_overlap(n_sets: int, n_items: int,
         Number items per BWS set
 
     shuffle: bool=True
-        Flag to permute/shuffle indicies
+        Flag to permute/shuffle indices
 
     Return:
     -------
     bwsindices: List[List[int]]
         A list of `n_sets` BWS sets. Each BWS set is a list
-          of `n_items` indicies.
+          of `n_items` indices.
 
     n_examples: int
-        The number of indicies spread across the BWS sets. The indicies can
-          be generated as follows: `indicies=range(0, n_examples)`
+        The number of indices spread across the BWS sets. The indices can
+          be generated as follows: `indices=range(0, n_examples)`
 
     Examples:
     ---------
-        from bwsample import bws_sets_overlap
-        bwsindices, n_examples = bws_sets_overlap(1000, 4, False)
+        from bwsample import indices_overlap
+        bwsindices, n_examples = indices_overlap(1000, 4, False)
 
     Notes:
     ------
@@ -68,18 +68,71 @@ def indices_overlap(n_sets: int, n_items: int,
     # compute required number of examples
     n_examples = n_sets * (n_items - 1)
 
-    # generate a `pool` of indicies
+    # generate a `pool` of indices
     if shuffle:
         pool = list(np.random.permutation(n_examples))
     else:
         pool = list(range(0, n_examples))
 
-    # copy from indicies `pool`
+    # copy from indices `pool`
     bwsindices = [pool[k:(k + n_items)]
                   for k in range(0, n_examples, n_items - 1)]
     bwsindices[-1].append(bwsindices[0][0])
 
     # shuffle each BWS set
+    if shuffle:
+        bwsindices = shuffle_subarrs(bwsindices, n_sets, n_items)
+
+    # done
+    return bwsindices, n_examples
+
+
+def indices_twice(n_sets: int, n_items: int,
+                  shuffle: Optional[bool] = True) -> (List[List[int]], int):
+    """Sample each example at least twice across all generated BWS sets
+
+    Parameters:
+    -----------
+    n_sets: int
+        Requested number of BWS sets
+
+    n_items: int
+        Number items per BWS set
+
+    shuffle: bool=True
+        Flag to permute/shuffle indices
+
+    Return:
+    -------
+    bwsindices: List[List[int]]
+        A list of `n_sets` BWS sets. Each BWS set is a list
+          of `n_items` indices.
+
+    n_examples: int
+        The number of indices spread across the BWS sets. The indices can
+          be generated as follows: `indices=range(0, n_examples)`
+
+    Examples:
+    ---------
+        from bwsample import indices_twice
+        bwsindices, n_examples = indices_twice(1000, 4, False)
+    """
+    # (A) Call `indices_overlap` without randomness!
+    bwsindices, n_examples = indices_overlap(n_sets, n_items, False)
+
+    # (B) Add BWS sets so that every index is used twice --
+    # number of BWS sets to connect examples
+    n_btw = (n_examples * (n_items - 2)) // (n_items * (n_items - 1))
+
+    # which examples from the `pool` have not been used twice?
+    avail = [q for q in range(n_examples) if (q % (n_items - 1)) != 0]
+
+    # generate BWS sets
+    for r in range(n_btw):
+        bwsindices.extend([[avail[k + r]
+                            for k in range(0, len(avail), n_btw)]])
+
+    # (C) Shuffle here
     if shuffle:
         bwsindices = shuffle_subarrs(bwsindices, n_sets, n_items)
 
