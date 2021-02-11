@@ -108,3 +108,4 @@ venv.bak/
 .vscode
 profile/data*
 .theia
+.DS_Store
