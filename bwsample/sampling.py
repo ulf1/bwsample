@@ -69,10 +69,7 @@ def indices_overlap(n_sets: int, n_items: int,
     n_examples = n_sets * (n_items - 1)
 
     # generate a `pool` of indices
-    if shuffle:
-        pool = list(np.random.permutation(n_examples))
-    else:
-        pool = list(range(0, n_examples))
+    pool = list(range(0, n_examples))
 
     # copy from indices `pool`
     bwsindices = [pool[k:(k + n_items)]
