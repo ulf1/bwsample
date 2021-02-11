@@ -4,10 +4,12 @@
 Sampling algorithm for best-worst scaling sets.
 
 ## Usage
-
 Table of Contents
 
-* [Use Case 1](#use-case-1)
+* [Sampling: At least once, every `1/(I-1)`-th twice](#sampling-at-least-once-every-1i-1-th-twice)
+* [Sampling: At least twice](#sampling-at-least-twice)
+* [Extract Pairs from evaluated an BWS set](#extract-pairs-from-evaluated-an-bws-set)
+* [Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)
 
 
 ### Sampling: At least once, every `1/(I-1)`-th twice
