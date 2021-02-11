@@ -28,6 +28,8 @@ setup(name='bwsample',
       packages=['bwsample'],
       install_requires=[
           'setuptools>=40.0.0',
+          'numpy>=1.19.5',
+          'scipy>=1.5.4',
           'numba>=0.52.0'
       ],
       python_requires='>=3.6',

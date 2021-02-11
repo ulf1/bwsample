@@ -9,6 +9,7 @@
   "upload_type": "software",
   "keywords": [
     "sampling",
-    "best-worst scaling"
+    "best-worst scaling",
+    "pairwise comparison"
   ]
 }
