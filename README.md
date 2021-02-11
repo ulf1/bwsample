@@ -11,11 +11,51 @@ Table of Contents
 
 
 ### Sampling: At least once, every `1/(I-1)`-th twice
+In the following example, we generate the indicies of `n_sets=6` BWS sets.
+Each BWS set has `n_items=4` items.
+
 
 ```python
-n_sets, n_items, permute = 10, 4, False
-bwsindices, n_examples = indices_overlap(n_sets, n_items, permute)
+from bwsample import indices_overlap
+n_sets, n_items, shuffle = 6, 4, False
+bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 ```
+
+`n_examples=18` means that 19 integer indicies from `range(18)=[0, 17]` were spread across the BWS sets. In the example below, you can see that the last element of a BWS sets is used as the first element in the succeeding BWS sets.
+
+```
+bwsindices = 
+[[0, 1, 2, 3],
+ [3, 4, 5, 6],
+ [6, 7, 8, 9],
+ [9, 10, 11, 12],
+ [12, 13, 14, 15],
+ [15, 16, 17, 0]]
+```
+
+The default setting is `shuffle=True` to permutate all indices before splitting the BWS sets, 
+and to shuffle each BWS set in a final step. 
+Random shuffling requires approx. 5-8x more time. 
+The behavior is still maintained to display 1 example in the succeeding BWS set.
+
+```python
+from bwsample import indices_overlap
+import numpy as np
+n_sets, n_items, shuffle = 6, 4, True
+np.random.seed(42)
+bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
+```
+
+```
+bwsindices = 
+[[5, 0, 8, 1],
+ [13, 16, 5, 3],
+ [11, 2, 16, 15],
+ [4, 9, 2, 17],
+ [10, 12, 4, 7],
+ [0, 10, 6, 14]]
+```
+
 
 ### Sampling: At least twice
 

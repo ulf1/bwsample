@@ -1,10 +1,21 @@
 import numpy as np
+import random
 import warnings
 from typing import List, Optional
 
 
+def shuffle_subarrs(arrs, n_sets, n_items):
+    rj = np.random.randint(1, n_items, n_sets)
+    rk = np.random.randint(0, n_items - 1, n_sets)
+    for i, (j, k) in enumerate(np.c_[rj, rk]):
+        arrs[i][j], arrs[i][0] = arrs[i][0], arrs[i][j]
+        if j != k:
+            arrs[i][k], arrs[i][-1] = arrs[i][-1], arrs[i][k]
+    return arrs
+
+
 def indices_overlap(n_sets: int, n_items: int,
-                    permute: Optional[bool] = True) -> (List[List[int]], int):
+                    shuffle: Optional[bool] = True) -> (List[List[int]], int):
     """Generate BWS set indices so that each example occur at least once,
         and exactly `1/(n_items - 1) * 100%` of examples occur twice across
         all generate BWS sets.
@@ -17,8 +28,8 @@ def indices_overlap(n_sets: int, n_items: int,
     n_items: int
         Number items per BWS set
 
-    permute: bool=True
-        Flag to permute indicies
+    shuffle: bool=True
+        Flag to permute/shuffle indicies
 
     Return:
     -------
@@ -49,7 +60,7 @@ def indices_overlap(n_sets: int, n_items: int,
         return [], 0
     if n_sets == 1:
         warnings.warn("Only one BWS set requested.")
-        if permute:
+        if shuffle:
             return [list(np.random.permutation(n_items))], n_items
         else:
             return [list(range(0, n_items))], n_items
@@ -58,7 +69,7 @@ def indices_overlap(n_sets: int, n_items: int,
     n_examples = n_sets * (n_items - 1)
 
     # generate a `pool` of indicies
-    if permute:
+    if shuffle:
         pool = list(np.random.permutation(n_examples))
     else:
         pool = list(range(0, n_examples))
@@ -67,6 +78,10 @@ def indices_overlap(n_sets: int, n_items: int,
     bwsindices = [pool[k:(k + n_items)]
                   for k in range(0, n_examples, n_items - 1)]
     bwsindices[-1].append(bwsindices[0][0])
+
+    # shuffle each BWS set
+    if shuffle:
+        bwsindices = shuffle_subarrs(bwsindices, n_sets, n_items)
 
     # done
     return bwsindices, n_examples
