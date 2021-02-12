@@ -19,7 +19,7 @@ Each BWS set has `n_items=5` items.
 
 ```python
 from bwsample import indices_overlap
-n_sets, n_items, shuffle = 4, 5, False
+n_sets, n_items, shuffle = 6, 4, False
 bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 ```
 
@@ -27,14 +27,18 @@ bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 
 ```
 bwsindices = 
-[[0, 1, 2, 3, 4], [4, 5, 6, 7, 8], [8, 9, 10, 11, 12], [12, 13, 14, 15, 0]]
+[[0, 1, 2, 3],
+ [3, 4, 5, 6],
+ [6, 7, 8, 9],
+ [9, 10, 11, 12],
+ [12, 13, 14, 15],
+ [15, 16, 17, 0]]
 ```
 
-Assume the indices are mapped to the letters `A-P` (or any other data),
+Assume the indices are mapped to the letters `A-S` (or any other data),
 we can illustrate:
 
 ![Overlapping BWS sets.](/docs/bwsample-overlap.png)
-
 
 
 
@@ -45,26 +49,69 @@ The behavior is still maintained to display 1 example in the succeeding BWS set.
 ```python
 from bwsample import indices_overlap
 import numpy as np
-n_sets, n_items, shuffle = 4, 5, True
+n_sets, n_items, shuffle = 6, 4, True
 np.random.seed(42)
 bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 ```
 
 ```
 bwsindices = 
-[[3, 1, 4, 0, 2], [8, 5, 6, 4, 7], [12, 8, 10, 11, 9], [0, 13, 14, 12, 15]]
+[[3, 1, 0, 2],
+ [4, 3, 5, 6],
+ [9, 7, 6, 8],
+ [12, 10, 9, 11],
+ [13, 12, 15, 14],
+ [16, 15, 0, 17]]
 ```
 
 
 ### Sampling: Almost twice
+The function `indices_twice` also calls `indices_overlap` but connects the non-overlapping examples to new BWS sets.
+
+![Connect not overlapped examples to new BWS sets.](/docs/bwsample-twice.png)
+
 
 ```python
 from bwsample import indices_twice
-n_sets, n_items, shuffle = 6, 3, False
-#n_sets, n_items, shuffle = 7, 3, False
+n_sets, n_items, shuffle = 6, 4, False
 bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
 bwsindices
 ```
+
+```
+bwsindices = 
+[[0, 1, 2, 3],
+ [3, 4, 5, 6],
+ [6, 7, 8, 9],
+ [9, 10, 11, 12],
+ [12, 13, 14, 15],
+ [15, 16, 17, 0],
+ [1, 5, 10, 14],
+ [2, 7, 11, 16],
+ [4, 8, 13, 17]]
+```
+
+The function does **not** guarantees that all examples occur twice across BWS sets.
+The reasons is that the numbers `n_sets` and `n_items` require a common denominator.
+For example, if both `n_sets=7` and `n_items=3`  are prime numbers, then remainder examples are unavoidable. 
+
+```python
+from bwsample import indices_twice
+n_sets, n_items, shuffle = 7, 3, False
+bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
+```
+
+
+If `n_items` is a prime number, you must ensure that `n_sets` is a multiple of `n_items`, e.g.
+
+```python
+from bwsample import indices_twice
+n_items, shuffle = 3, False
+n_sets = 123 * n_items
+bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
+```
+
+
 
 ### Extract Pairs from evaluated an BWS set
 
