@@ -39,3 +39,10 @@ def test5():
     bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
     counts = list(Counter(itertools.chain(*bwsindices)).values())
     assert all([c == 2 for c in counts])
+
+
+def test6():
+    n_sets, n_items, shuffle = 5, 3, False
+    bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
+    for bwsset in bwsindices:
+        assert len(bwsset) == 3

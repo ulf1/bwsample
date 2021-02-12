@@ -130,6 +130,7 @@ def indices_twice(n_sets: int, n_items: int,
 
     # generate BWS sets
     grid = range(0, n_avail, n_btw)
+    grid = grid[:n_items]
     for r in range(n_btw):
         bwsindices.extend([[avail[k + r] for k in grid]])
 
