@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 
-def extract_pairs(stateids: List[str], 
+def extract_pairs(stateids: List[str],
                   combostates: List[int],
                   dok_all: Optional[dict] = None,
                   dok_direct: Optional[dict] = None,
