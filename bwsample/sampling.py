@@ -117,17 +117,21 @@ def indices_twice(n_sets: int, n_items: int,
     # (A) Call `indices_overlap` without randomness!
     bwsindices, n_examples = indices_overlap(n_sets, n_items, False)
 
+    if n_items <= 2 or n_sets <= 1:
+        return bwsindices, n_examples
+
     # (B) Add BWS sets so that every index is used twice --
     # number of BWS sets to connect examples
     n_btw = (n_examples * (n_items - 2)) // (n_items * (n_items - 1))
 
     # which examples from the `pool` have not been used twice?
     avail = [q for q in range(n_examples) if (q % (n_items - 1)) != 0]
+    n_avail = n_btw * (len(avail) // n_btw)
 
     # generate BWS sets
+    grid = range(0, n_avail, n_btw)
     for r in range(n_btw):
-        bwsindices.extend([[avail[k + r]
-                            for k in range(0, len(avail), n_btw)]])
+        bwsindices.extend([[avail[k + r] for k in grid]])
 
     # (C) Shuffle here
     if shuffle:
