@@ -114,10 +114,10 @@ bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
 
 
 ### Extract Pairs from evaluated an BWS set
-
+...
 
 ### Extract Pairs by Logical Inference between BWS sets
-
+...
 
 ## Appendix
 
