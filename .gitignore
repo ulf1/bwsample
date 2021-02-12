@@ -109,4 +109,4 @@ venv.bak/
 profile/data*
 .theia
 .DS_Store
-examples/tmp.ipynb 
+examples/tmp.*
