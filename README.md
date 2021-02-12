@@ -33,7 +33,7 @@ bwsindices =
 Assume the indices are mapped to the letters `A-P` (or any other data),
 we can illustrate:
 
-![Overlapping BWS sets.](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-overlap.png)
+![Overlapping BWS sets.](/docs/bwsample-overlap.png)
 
 
 
@@ -45,19 +45,14 @@ The behavior is still maintained to display 1 example in the succeeding BWS set.
 ```python
 from bwsample import indices_overlap
 import numpy as np
-n_sets, n_items, shuffle = 6, 4, True
+n_sets, n_items, shuffle = 4, 5, True
 np.random.seed(42)
 bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 ```
 
 ```
 bwsindices = 
-[[3, 1, 0, 2],
- [4, 3, 5, 6],
- [9, 7, 6, 8],
- [12, 10, 9, 11],
- [13, 12, 15, 14],
- [16, 15, 0, 17]]
+[[3, 1, 4, 0, 2], [8, 5, 6, 4, 7], [12, 8, 10, 11, 9], [0, 13, 14, 12, 15]]
 ```
 
 
