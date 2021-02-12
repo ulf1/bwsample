@@ -1,4 +1,4 @@
 # public packages (see setup.py)
 numpy>=1.19.5
 scipy>=1.5.4
-numba>=0.52.0
+#numba>=0.52.0
