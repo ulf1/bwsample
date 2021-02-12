@@ -7,19 +7,19 @@ Sampling algorithm for best-worst scaling sets.
 Table of Contents
 
 * [Sampling: At least once, every `1/(I-1)`-th twice](#sampling-at-least-once-every-1i-1-th-twice)
-* [Sampling: At least twice](#sampling-at-least-twice)
+* [Sampling: Almost twice](#sampling-almost-twice)
 * [Extract Pairs from evaluated an BWS set](#extract-pairs-from-evaluated-an-bws-set)
 * [Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)
 
 
 ### Sampling: At least once, every `1/(I-1)`-th twice
-In the following example, we generate the indicies of `n_sets=6` BWS sets.
-Each BWS set has `n_items=4` items.
+In the following example, we generate the indicies of `n_sets=4` BWS sets.
+Each BWS set has `n_items=5` items.
 
 
 ```python
 from bwsample import indices_overlap
-n_sets, n_items, shuffle = 6, 4, False
+n_sets, n_items, shuffle = 4, 5, False
 bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 ```
 
@@ -27,13 +27,16 @@ bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
 
 ```
 bwsindices = 
-[[0, 1, 2, 3],
- [3, 4, 5, 6],
- [6, 7, 8, 9],
- [9, 10, 11, 12],
- [12, 13, 14, 15],
- [15, 16, 17, 0]]
+[[0, 1, 2, 3, 4], [4, 5, 6, 7, 8], [8, 9, 10, 11, 12], [12, 13, 14, 15, 0]]
 ```
+
+Assume the indices are mapped to the letters `A-P` (or any other data),
+we can illustrate:
+
+![Overlapping BWS sets.](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-overlap.png)
+
+
+
 
 The default setting is `shuffle=True` to shuffle each BWS set in a final step. 
 Random shuffling requires approx. 5-8x more time. 
@@ -58,8 +61,15 @@ bwsindices =
 ```
 
 
-### Sampling: At least twice
+### Sampling: Almost twice
 
+```python
+from bwsample import indices_twice
+n_sets, n_items, shuffle = 6, 3, False
+#n_sets, n_items, shuffle = 7, 3, False
+bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
+bwsindices
+```
 
 ### Extract Pairs from evaluated an BWS set
 
