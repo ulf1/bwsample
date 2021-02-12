@@ -114,7 +114,57 @@ bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
 
 
 ### Extract Pairs from evaluated an BWS set
-...
+We extract `>` (gt) relations only throughout the whole python module.
+
+```python
+from bwsample import extract_pairs
+stateids = ['A', 'B', 'C', 'D']
+combostates = [0, 0, 2, 1]  # BEST=1, WORST=2
+dok_all, dok_direct, dok_best, dok_worst = extract_pairs(stateids, combostates)
+```
+
+The dictionary `dok_all` counts all pairs, e.g. `('B', 'C'): 1` means `B>C` was counted `1` times.
+```
+dok_all =
+    {('D', 'C'): 1, ('D', 'A'): 1, ('A', 'C'): 1, ('D', 'B'): 1, ('B', 'C'): 1}
+```
+
+The dictionary `dok_direct` counts only pairs with both objects are explicitly selected as `BEST=1` or `WORST=2`.
+```
+dok_direct = 
+    {('D', 'C'): 1}
+```
+
+The dictionary `dok_best` counts only pairs with the lhs object selected as `BEST=1` and rhs object unselected (`MIDDLE=0`).
+```
+dok_best =
+    {('D', 'A'): 1, ('D', 'B'): 1}
+```
+
+The dictionary `doc_worst` counts only pairs with the lhs object unselected (`MIDDLE=0`) and the rhs object selected as `WORST=2`.
+```
+dok_worst =
+    {('A', 'C'): 1, ('B', 'C'): 1}
+```
+
+You can update the dictionaries as follows:
+
+```python
+stateids = ['D', 'E', 'F', 'A']
+combostates = [0, 1, 0, 2]
+
+dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
+    stateids, combostates, dok_all=dok_all, dok_direct=dok_direct, dok_best=dok_best, dok_worst=dok_worst)
+```
+
+e.g. the pair `D>A` has 2 counts now.
+
+```
+dok_all =
+    {('D', 'C'): 1, ('D', 'A'): 2, ('A', 'C'): 1, ('D', 'B'): 1, ('B', 'C'): 1, 
+     ('E', 'A'): 1, ('E', 'D'): 1, ('E', 'F'): 1, ('F', 'A'): 1}
+```
+
 
 ### Extract Pairs by Logical Inference between BWS sets
 ...

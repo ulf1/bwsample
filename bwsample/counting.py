@@ -1,7 +1,8 @@
 from typing import List, Optional
 
 
-def extract_pairs(stateids: List[str], combostates: List[int],
+def extract_pairs(stateids: List[str], 
+                  combostates: List[int],
                   dok_all: Optional[dict] = None,
                   dok_direct: Optional[dict] = None,
                   dok_best: Optional[dict] = None,
@@ -9,6 +10,9 @@ def extract_pairs(stateids: List[str], combostates: List[int],
                       dict, dict, dict, dict):
     """
     """
+    if len(stateids) != len(combostates):
+        raise Exception("IDs and states lists must have the same length")
+
     # find `best` and `worst` py index
     # (this is 2-3x faster than a loop with if-else)
     best_idx = combostates.index(1)
@@ -18,7 +22,13 @@ def extract_pairs(stateids: List[str], combostates: List[int],
     # - dictionary of key sparse matrix
     # - Each pair(i,j) refers to ">"
     if dok_all is None:
-        dok_all, dok_direct, dok_best, dok_worst = {}, {}, {}, {}
+        dok_all = {}
+    if dok_direct is None:
+        dok_direct = {}
+    if dok_best is None:
+        dok_best = {}
+    if dok_worst is None:
+        dok_worst = {}
 
     # add the direct best-worst observation
     best_uuid = stateids[best_idx]

@@ -15,6 +15,7 @@ def test1():
     assert dok_direct == {('jkl', 'ghi'): 1}
     assert dok_best == {('jkl', 'abc'): 1, ('jkl', 'def'): 1}
     assert dok_worst == {('abc', 'ghi'): 1, ('def', 'ghi'): 1}
+    assert sorted({**dok_direct, **dok_best, **dok_worst}) == sorted(dok_all)
 
 
 def test2():
@@ -34,6 +35,7 @@ def test2():
     assert dok_direct == {('jkl', 'ghi'): 2}
     assert dok_best == {('jkl', 'abc'): 2, ('jkl', 'def'): 2}
     assert dok_worst == {('abc', 'ghi'): 2, ('def', 'ghi'): 2}
+    assert sorted({**dok_direct, **dok_best, **dok_worst}) == sorted(dok_all)
 
 
 def test3():
@@ -44,3 +46,4 @@ def test3():
         stateids, combostates)
 
     assert list(dok_direct.values())[0] == 1
+    assert sorted({**dok_direct, **dok_best, **dok_worst}) == sorted(dok_all)
