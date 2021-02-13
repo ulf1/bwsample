@@ -8,7 +8,73 @@ def extract_pairs(stateids: List[str],
                   dok_best: Optional[dict] = None,
                   dok_worst: Optional[dict] = None) -> (
                       dict, dict, dict, dict):
-    """
+    """Extract ">" Pairs from one evaluated BWS set
+
+    Parameters:
+    -----------
+    stateids: List[str]
+        A list of IDs (e.g. uuid) corresponding to the `combostates` list.
+
+    combostates: List[int]
+        Combinatorial state variable. Each element of the list
+          - corresponds to an ID in the `stateids` list,
+          - represents an item state variable (or the i-th FSM), and
+          - can habe one of the three states:
+            - 0: MIDDLE, unselected (initial state)
+            - 1: BEST
+            - 2: WORST
+        (see TR-225)
+
+    dok_all: Optional[dict]
+        Existing `dok_all` dictionary that is updated here. see below.
+
+    dok_direct: Optional[dict]
+        Existing `dok_direct` dictionary that is updated here. see below.
+
+    dok_best: Optional[dict]
+        Existing `dok_best` dictionary that is updated here. see below.
+
+    dok_worst: Optional[dict]
+        Existing `dok_worst` dictionary that is updated here. see below.
+
+    Returns:
+    --------
+    dok_all: dict
+        Dictionary with counts for each ">" pair, e.g. an
+          entry `{..., ('B', 'C'): 1, ...} means `B>C` was counted `1` times.
+        We can extract 3 types of pairs from 1 BWS set:
+          - "BEST > WORST" (see dok_direct)
+          - "BEST > MIDDLE" (see dok_best)
+          - "MIDDLE > WORST" (see dok_worst)
+        The `dok_all` dictionary contains the aggregate counts of the types
+          of pairs. Use `dok_direct`, `dok_best` and `dok_worst` for
+          attribution analysis.
+
+    dok_direct: dict
+        Dictionary with counts for explicit "BEST > WORST" pairs.
+
+    dok_best: dict
+        Dictionary with counts for "BEST > MIDDLE" pairs.
+
+    dok_worst: dict
+        Dictionary with counts for "MIDDLE > WORST" pairs.
+
+    Examples:
+    ---------
+        from bwsample import extract_pairs
+
+        # First BWS set
+        stateids = ['A', 'B', 'C', 'D']
+        combostates = [0, 0, 2, 1]  # BEST=1, WORST=2
+        dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
+            stateids, combostates)
+
+        # Update dictionary by processing the next BWS set
+        stateids = ['D', 'E', 'F', 'A']
+        combostates = [0, 1, 0, 2]
+        dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
+            stateids, combostates, dok_all=dok_all, dok_direct=dok_direct,
+            dok_best=dok_best, dok_worst=dok_worst)
     """
     if len(stateids) != len(combostates):
         raise Exception("IDs and states lists must have the same length")
