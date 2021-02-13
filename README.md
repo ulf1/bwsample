@@ -135,6 +135,8 @@ dok_all =
 - `"BEST > MIDDLE"`; The dictionary `dok_best` counts only pairs with the lhs object selected as `BEST=1` and rhs object unselected (`MIDDLE=0`), e.g. `dok_best = {('D', 'A'): 1, ('D', 'B'): 1}`
 - `"MIDDLE > WORST"`; The dictionary `doc_worst` counts only pairs with the lhs object unselected (`MIDDLE=0`) and the rhs object selected as `WORST=2`, e.g. `dok_worst = {('A', 'C'): 1, ('B', 'C'): 1}`
 
+![Identify pairs from BWS set, and increment counts in dictionary.](/docs/bwsample-extract.png)
+
 You can update the dictionaries as follows:
 
 ```python
