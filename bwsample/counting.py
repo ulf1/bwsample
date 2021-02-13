@@ -79,11 +79,6 @@ def extract_pairs(stateids: List[str],
     if len(stateids) != len(combostates):
         raise Exception("IDs and states lists must have the same length")
 
-    # find `best` and `worst` py index
-    # (this is 2-3x faster than a loop with if-else)
-    best_idx = combostates.index(1)
-    worst_idx = combostates.index(2)
-
     # Dict[Tuple[uuid, uuid], count]]
     # - dictionary of key sparse matrix
     # - Each pair(i,j) refers to ">"
@@ -95,6 +90,15 @@ def extract_pairs(stateids: List[str],
         dok_best = {}
     if dok_worst is None:
         dok_worst = {}
+
+    # find `best` and `worst` py index
+    # (this is 2-3x faster than a loop with if-else)
+    # If no element has the state `1` and `2`, then skip
+    try:
+        best_idx = combostates.index(1)
+        worst_idx = combostates.index(2)
+    except ValueError:
+        return dok_all, dok_direct, dok_best, dok_worst
 
     # add the direct best-worst observation
     best_uuid = stateids[best_idx]
