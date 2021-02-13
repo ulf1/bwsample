@@ -1,15 +1,15 @@
 [![PyPI version](https://badge.fury.io/py/bwsample.svg)](https://badge.fury.io/py/bwsample)
 
-# bwsample
-Sampling algorithm for best-worst scaling sets.
+# bwsample: Sampling and Evaluation of Best-Worst Scaling sets
+Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, and count in dictionary of keys sparse matrix.
 
 ## Usage
 Table of Contents
 
 * [Sampling: At least once, every `1/(I-1)`-th twice](#sampling-at-least-once-every-1i-1-th-twice)
 * [Sampling: Almost twice](#sampling-almost-twice)
-* [Extract Pairs from evaluated an BWS set](#extract-pairs-from-evaluated-an-bws-set)
-* [Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)
+* [Extract Pairs from evaluated an BWS set](#extract--pairs-from-one-evaluated-bws-set)
+* ~~[Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)~~
 
 
 ### Sampling: At least once, every `1/(I-1)`-th twice
@@ -38,7 +38,7 @@ bwsindices =
 Assume the indices are mapped to the letters `A-S` (or any other data),
 we can illustrate:
 
-![Overlapping BWS sets.](/docs/bwsample-overlap.png)
+<img alt="Overlapping BWS sets." src="/docs/bwsample-overlap.png" width="300px">
 
 
 
@@ -68,7 +68,7 @@ bwsindices =
 ### Sampling: Almost twice
 The function `indices_twice` also calls `indices_overlap` but connects the non-overlapping examples to new BWS sets.
 
-![Connect not overlapped examples to new BWS sets.](/docs/bwsample-twice.png)
+<img alt="Connect not overlapped examples to new BWS sets." src="/docs/bwsample-twice.png" width="300px">
 
 
 ```python
@@ -113,10 +113,50 @@ bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
 
 
 
-### Extract Pairs from evaluated an BWS set
-...
+### Extract ">" Pairs from one evaluated BWS set
+We extract `>` (gt) relations only throughout the whole python module.
 
-### Extract Pairs by Logical Inference between BWS sets
+```python
+from bwsample import extract_pairs
+stateids = ['A', 'B', 'C', 'D']
+combostates = [0, 0, 2, 1]  # BEST=1, WORST=2
+dok_all, dok_direct, dok_best, dok_worst = extract_pairs(stateids, combostates)
+```
+
+The dictionary `dok_all` counts all pairs as `>` (gt) relation, e.g. `('B', 'C'): 1` means `B>C` was counted `1` times.
+```
+dok_all =
+    {('D', 'C'): 1, ('D', 'A'): 1, ('A', 'C'): 1, ('D', 'B'): 1, ('B', 'C'): 1}
+```
+
+`dok_all` contains 3 types of pairs that are stored in 3 further dictionaries `dok_direct`, `dok_best`, and `doc_worst`. The distinction might be useful for attribution analysis.
+
+- `"BEST > WORST"`; The dictionary `dok_direct` counts only pairs with both objects are explicitly selected as `BEST=1` or `WORST=2`, e.g. `dok_direct = {('D', 'C'): 1}`
+- `"BEST > MIDDLE"`; The dictionary `dok_best` counts only pairs with the lhs object selected as `BEST=1` and rhs object unselected (`MIDDLE=0`), e.g. `dok_best = {('D', 'A'): 1, ('D', 'B'): 1}`
+- `"MIDDLE > WORST"`; The dictionary `doc_worst` counts only pairs with the lhs object unselected (`MIDDLE=0`) and the rhs object selected as `WORST=2`, e.g. `dok_worst = {('A', 'C'): 1, ('B', 'C'): 1}`
+
+<img alt="Identify pairs from BWS set, and increment counts in dictionary." src="/docs/bwsample-extract.png" width="200px">
+
+You can update the dictionaries as follows:
+
+```python
+stateids = ['D', 'E', 'F', 'A']
+combostates = [0, 1, 0, 2]
+
+dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
+    stateids, combostates, dok_all=dok_all, dok_direct=dok_direct, dok_best=dok_best, dok_worst=dok_worst)
+```
+
+e.g. the pair `D>A` has 2 counts now.
+
+```
+dok_all =
+    {('D', 'C'): 1, ('D', 'A'): 2, ('A', 'C'): 1, ('D', 'B'): 1, ('B', 'C'): 1, 
+     ('E', 'A'): 1, ('E', 'D'): 1, ('E', 'F'): 1, ('F', 'A'): 1}
+```
+
+
+### ~~Extract Pairs by Logical Inference between BWS sets~~
 ...
 
 ## Appendix

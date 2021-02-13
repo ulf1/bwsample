@@ -3,13 +3,14 @@
     "name": "Ulf Hamster",
     "orcid": "0000-0002-0440-4868"
   }],
-  "title": "bwsample: Sampling algorithm for best-worst scaling sets.",
-  "description": "Sampling algorithm for best-worst scaling sets.",
+  "title": "bwsample: Sampling and Evaluation of Best-Worst Scaling sets",
+  "description": "Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, and count in dictionary of keys sparse matrix.",
   "license": "Apache-2.0",
   "upload_type": "software",
   "keywords": [
-    "sampling",
-    "best-worst scaling",
-    "pairwise comparison"
+    "Sampling",
+    "Best-Worst Scaling",
+    "Pairwise Comparison",
+    "Dictionary of Keys"
   ]
 }
