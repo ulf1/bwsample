@@ -9,6 +9,10 @@ Table of Contents
 * [Sampling: At least once, every `1/(I-1)`-th twice](#sampling-at-least-once-every-1i-1-th-twice)
 * [Sampling: Almost twice](#sampling-almost-twice)
 * [Extract Pairs from evaluated an BWS set](#extract--pairs-from-one-evaluated-bws-set)
+    * [Update dictionaries](#update-dictionaries)
+    * [Convert dictionary to SciPy sparse matrix](#convert-dictionary-to-scipy-sparse-matrix)
+    * [Process multiple BWS sets](#process-multiple-bws-sets)
+* [Analyse Counts/Frequencies](#analyse-countsfrequencies)
 * ~~[Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)~~
 
 
