@@ -209,6 +209,76 @@ cnts_all.todense()
 ```
 
 
+### Analyse Counts/Frequencies
+Generate a toy example:
+
+```python
+from bwsample import extract_pairs_batch2, to_scipy
+
+data = (
+    ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+    ([1, 0, 0, 2], ['A', 'B', 'C', 'D']), 
+    ([2, 0, 0, 1], ['A', 'B', 'C', 'D']), 
+    ([1, 2, 0, 0], ['D', 'E', 'F', 'A']),
+    ([0, 2, 1, 0], ['D', 'E', 'F', 'A']),
+    ([0, 0, 1, 2], ['D', 'E', 'F', 'A'])
+)
+
+# Extract pair frequencies
+dok, _, _, _ = extract_pairs_batch2(data)
+
+# convert to sparse matrix
+cnt, indicies = to_scipy(dok)
+print(cnt.todense())
+```
+
+```
+[[0. 2. 2. 2. 2. 0.]
+ [1. 0. 0. 2. 0. 0.]
+ [1. 0. 0. 2. 0. 0.]
+ [3. 1. 1. 0. 2. 1.]
+ [1. 0. 0. 0. 0. 0.]
+ [2. 0. 0. 2. 3. 0.]]
+```
+
+Simple Ratios.
+
+```python
+from bwsample import scale_simple
+ratios = scale_simple(cnt)
+print(ratios.round(2))
+```
+
+The problem of simple ratios `(Ni - Nk)/(Ni + Nj)` is that the effect of the total number of observations is ignored.
+
+```
+[[ 0.     0.333  0.333 -0.2    0.333 -1.   ]
+ [-0.333  0.     0.     0.333  0.     0.   ]
+ [-0.333  0.     0.     0.333  0.     0.   ]
+ [ 0.2   -0.333 -0.333  0.     1.    -0.333]
+ [-0.333  0.     0.    -1.     0.    -1.   ]
+ [ 1.     0.     0.     0.333  1.     0.   ]]
+```
+
+Using the p-values of the Pearson Chi-Squared test (Approximates the discrete binomial test).
+Especially when a few frequencies become larger while other pairs exhibit low counts in the dataset, you should use `scale_pvalues` (instead of `scale_simple`).
+
+```python
+from bwsample import scale_pvalues
+pvals = scale_pvalues(cnt)
+print(pvals.todense().round(3))
+```
+
+```
+[[0.    0.436 0.436 0.345 0.436 0.843]
+ [0.564 0.    0.    0.436 0.    0.   ]
+ [0.564 0.    0.    0.436 0.    0.   ]
+ [0.655 0.564 0.564 0.    0.843 0.436]
+ [0.564 0.    0.    0.157 0.    0.917]
+ [0.157 0.    0.    0.564 0.083 0.   ]]
+```
+
+
 ### ~~Extract Pairs by Logical Inference between BWS sets~~
 ...
 
