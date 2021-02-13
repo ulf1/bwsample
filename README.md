@@ -245,7 +245,7 @@ print(cnt.todense())
  [2. 0. 0. 2. 3. 0.]]
 ```
 
-Simple Ratios.
+Simple Ratios. The higher the ratio of (i,j), the better `Item[i]>Item[j]`.
 
 ```python
 from bwsample import scale_simple
@@ -253,7 +253,7 @@ ratios = scale_simple(cnt)
 print(ratios.round(2))
 ```
 
-The problem of simple ratios `(Ni - Nk)/(Ni + Nj)` is that the effect of the total number of observations is ignored.
+The problem of simple ratios `(Nij - Nji)/(Nij + Nji)` is that the effect of the total number of observations is ignored.
 
 ```
 [[ 0.     0.333  0.333 -0.2    0.333 -1.   ]
@@ -273,6 +273,16 @@ pvals = scale_pvalues(cnt)
 print(pvals.todense().round(3))
 ```
 
+We are testing the hypothesis
+
+* `x = Nij / (Nij + Nji)`
+* H0: `x = 0.5`
+* Ha: `x > 0.5`
+
+i.e. the lower the p-value of the Pearson Chi-Squared test, 
+the more significant is the rejection of H0.
+In other words, low p-values means `Nij>Nji` might more true than `Nji>Nij`.
+
 ```
 [[0.    0.436 0.436 0.345 0.436 0.843]
  [0.564 0.    0.    0.436 0.    0.   ]
@@ -285,16 +295,16 @@ print(pvals.todense().round(3))
 Now we can sum each column, and sort it to get a ranking:
 
 ```python
-ranked = np.argsort(pvals.sum(axis=0))
+ranked = np.argsort(-pvals.sum(axis=0))
 bymappedid = np.array(indicies)[ranked]
 ```
 
 ```
 ranked = 
-[1, 2, 4, 3, 5, 0]
+[0, 5, 3, 4, 1, 2]
 
 bymappedid = 
-['B', 'C', 'E', 'D', 'F', 'A']
+['A', 'F', 'D', 'E', 'B', 'C']
 ```
 
 
