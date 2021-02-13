@@ -286,10 +286,15 @@ Now we can sum each column, and sort it to get a ranking:
 
 ```python
 ranked = np.argsort(pvals.sum(axis=0))
+bymappedid = np.array(indicies)[ranked]
 ```
 
 ```
+ranked = 
 [1, 2, 4, 3, 5, 0]
+
+bymappedid = 
+['B', 'C', 'E', 'D', 'F', 'A']
 ```
 
 
