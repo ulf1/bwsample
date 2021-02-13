@@ -38,7 +38,7 @@ bwsindices =
 Assume the indices are mapped to the letters `A-S` (or any other data),
 we can illustrate:
 
-![Overlapping BWS sets.](/docs/bwsample-overlap.png){:height="50%" width="50%"}
+![Overlapping BWS sets.](/docs/bwsample-overlap.png)
 
 
 
@@ -68,7 +68,7 @@ bwsindices =
 ### Sampling: Almost twice
 The function `indices_twice` also calls `indices_overlap` but connects the non-overlapping examples to new BWS sets.
 
-![Connect not overlapped examples to new BWS sets.](/docs/bwsample-twice.png){:height="50%" width="50%"}
+![Connect not overlapped examples to new BWS sets.](/docs/bwsample-twice.png)
 
 
 ```python
@@ -135,7 +135,7 @@ dok_all =
 - `"BEST > MIDDLE"`; The dictionary `dok_best` counts only pairs with the lhs object selected as `BEST=1` and rhs object unselected (`MIDDLE=0`), e.g. `dok_best = {('D', 'A'): 1, ('D', 'B'): 1}`
 - `"MIDDLE > WORST"`; The dictionary `doc_worst` counts only pairs with the lhs object unselected (`MIDDLE=0`) and the rhs object selected as `WORST=2`, e.g. `dok_worst = {('A', 'C'): 1, ('B', 'C'): 1}`
 
-![Identify pairs from BWS set, and increment counts in dictionary.](/docs/bwsample-extract.png){:height="50%" width="50%"}
+<img alt="Identify pairs from BWS set, and increment counts in dictionary." src="/docs/bwsample-extract.png" width="50%">
 
 You can update the dictionaries as follows:
 
