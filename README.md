@@ -282,6 +282,16 @@ print(pvals.todense().round(3))
  [0.157 0.    0.    0.564 0.083 0.   ]]
 ```
 
+Now we can sum each column, and sort it to get a ranking:
+
+```python
+ranked = np.argsort(pvals.sum(axis=0))
+```
+
+```
+[1, 2, 4, 3, 5, 0]
+```
+
 
 ### ~~Extract Pairs by Logical Inference between BWS sets~~
 ...
