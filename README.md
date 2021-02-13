@@ -1,7 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/bwsample.svg)](https://badge.fury.io/py/bwsample)
 
-# bwsample
-Sampling algorithm for best-worst scaling sets.
+# bwsample: Sampling and Evaluation of Best-Worst Scaling sets
+Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, and count in dictionary of keys sparse matrix.
 
 ## Usage
 Table of Contents
@@ -9,7 +9,7 @@ Table of Contents
 * [Sampling: At least once, every `1/(I-1)`-th twice](#sampling-at-least-once-every-1i-1-th-twice)
 * [Sampling: Almost twice](#sampling-almost-twice)
 * [Extract Pairs from evaluated an BWS set](#extract-pairs-from-evaluated-an-bws-set)
-* [Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)
+* ~~[Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)~~
 
 
 ### Sampling: At least once, every `1/(I-1)`-th twice
@@ -154,7 +154,7 @@ dok_all =
 ```
 
 
-### Extract Pairs by Logical Inference between BWS sets
+### ~~Extract Pairs by Logical Inference between BWS sets~~
 ...
 
 ## Appendix
