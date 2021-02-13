@@ -119,3 +119,48 @@ def extract_pairs(stateids: List[str],
 
     # done
     return dok_all, dok_direct, dok_best, dok_worst
+
+
+def extract_pairs_batch(evaluated_combostates, mapped_sent_ids):
+    """Loop over an batch of BWS sets
+
+    Example:
+    -------
+        from bwsample import extract_pairs, to_scipy
+        mapped_sent_ids = (['id1', 'id2', 'id3', 'id4'],
+                           ['id4', 'id5', 'id6', 'id1'])
+        evaluated_combostates = ([0, 0, 2, 1], [0, 1, 0, 2])
+        dok_all, dok_direct, dok_best, dok_worst = extract_pairs_batch(
+            mapped_sent_ids, evaluated_combostates)
+        cnts_all, indicies = to_scipy(dok_all)
+        cnts_all.todense()
+    """
+    dok_all, dok_direct, dok_best, dok_worst = {}, {}, {}, {}
+    for combostates, stateids in zip(*(evaluated_combostates,
+                                       mapped_sent_ids)):
+        dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
+            stateids, combostates, dok_all=dok_all, dok_direct=dok_direct,
+            dok_best=dok_best, dok_worst=dok_worst)
+    return dok_all, dok_direct, dok_best, dok_worst
+
+
+def extract_pairs_batch2(data):
+    """Loop over an batch of BWS sets
+
+    Example:
+    -------
+        from bwsample import extract_pairs_batch, to_scipy
+        data = (
+            ([0, 0, 2, 1], ['id1', 'id2', 'id3', 'id4']),
+            ([0, 1, 0, 2], ['id4', 'id5', 'id6', 'id1']) )
+        dok_all, dok_direct, dok_best, dok_worst = extract_pairs_batch2(data)
+
+        cnts_all, indicies = to_scipy(dok_all)
+        cnts_all.todense()
+    """
+    dok_all, dok_direct, dok_best, dok_worst = {}, {}, {}, {}
+    for combostates, stateids in data:
+        dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
+            stateids, combostates, dok_all=dok_all, dok_direct=dok_direct,
+            dok_best=dok_best, dok_worst=dok_worst)
+    return dok_all, dok_direct, dok_best, dok_worst

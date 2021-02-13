@@ -177,6 +177,37 @@ matrix([[0., 0., 1., 0., 0., 0.],
 idx = ['A', 'B', 'C', 'D', 'E', 'F']
 ```
 
+### Process multiple BWS sets
+Use `extract_pairs_batch` 
+```python
+from bwsample import extract_pairs_batch, to_scipy
+
+evaluated_combostates = ([0, 0, 2, 1], [0, 1, 0, 2])
+mapped_sent_ids = (['id1', 'id2', 'id3', 'id4'], ['id4', 'id5', 'id6', 'id1'])
+
+dok_all, dok_direct, dok_best, dok_worst = extract_pairs_batch(
+    evaluated_combostates, mapped_sent_ids)
+
+cnts_all, indicies = to_scipy(dok_all)
+cnts_all.todense()
+```
+
+or `extract_pairs_batch2`
+
+```python
+from bwsample import extract_pairs_batch, to_scipy
+
+data = (
+    ([0, 0, 2, 1], ['id1', 'id2', 'id3', 'id4']), 
+    ([0, 1, 0, 2], ['id4', 'id5', 'id6', 'id1'])
+)
+
+dok_all, dok_direct, dok_best, dok_worst = extract_pairs_batch2(data)
+
+cnts_all, indicies = to_scipy(dok_all)
+cnts_all.todense()
+```
+
 
 ### ~~Extract Pairs by Logical Inference between BWS sets~~
 ...
