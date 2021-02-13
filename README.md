@@ -137,6 +137,7 @@ dok_all =
 
 <img alt="Identify pairs from BWS set, and increment counts in dictionary." src="/docs/bwsample-extract.png" width="200px">
 
+### Update dictionaries
 You can update the dictionaries as follows:
 
 ```python
@@ -153,6 +154,27 @@ e.g. the pair `D>A` has 2 counts now.
 dok_all =
     {('D', 'C'): 1, ('D', 'A'): 2, ('A', 'C'): 1, ('D', 'B'): 1, ('B', 'C'): 1, 
      ('E', 'A'): 1, ('E', 'D'): 1, ('E', 'F'): 1, ('F', 'A'): 1}
+```
+
+
+### Convert dictionary to SciPy sparse matrix
+
+```python
+from bwsample import to_scipy
+cnts, idx = to_scipy(dok_all)
+cnts.todense()
+```
+
+```
+cnts = 
+matrix([[0., 0., 1., 0., 0., 0.],
+        [0., 0., 1., 0., 0., 0.],
+        [0., 0., 0., 0., 0., 0.],
+        [2., 1., 1., 0., 0., 0.],
+        [1., 0., 0., 1., 0., 1.],
+        [1., 0., 0., 0., 0., 0.]])
+
+idx = ['A', 'B', 'C', 'D', 'E', 'F']
 ```
 
 
