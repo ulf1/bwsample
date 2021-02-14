@@ -168,3 +168,81 @@ def extract_pairs_batch2(data):
             stateids, combostates, dok_all=dok_all, dok_direct=dok_direct,
             dok_best=dok_best, dok_worst=dok_worst)
     return dok_all, dok_direct, dok_best, dok_worst
+
+
+def find_by_state(ids, states, s_):
+    return [i for i, s in zip(*(ids, states)) if s in s_]
+
+
+def logical_rules(ids1, ids2, states1, states2, s1, s2, dok=None):
+    if dok is None:
+        dok = {}
+
+    if s1 == 0:  # MIDDLE
+        if s2 == 0:
+            # mm: D>Z
+            for i in find_by_state(ids1, states1, [1]):
+                for j in find_by_state(ids2, states2, [2]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+            # mm: X>F
+            for i in find_by_state(ids2, states2, [1]):
+                for j in find_by_state(ids1, states1, [2]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+
+        elif s2 == 1:
+            # mb: D>Y, D>Z
+            for i in find_by_state(ids1, states1, [1]):
+                for j in find_by_state(ids2, states2, [0, 2]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+
+        elif s2 == 2:
+            # mw: X>F, Y>F
+            for j in find_by_state(ids1, states1, [2]):
+                for i in find_by_state(ids2, states2, [0, 1]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+
+    elif s1 == 1:  # BEST
+        if s2 == 0:
+            # bm: X>E, X>F
+            for i in find_by_state(ids2, states2, [1]):
+                for j in find_by_state(ids1, states1, [0, 2]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+
+        elif s2 == 2:
+            # bw: X>E, X>F, Y>E, Y>F
+            for j in find_by_state(ids1, states1, [0, 2]):
+                for i in find_by_state(ids2, states2, [0, 1]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+
+    elif s1 == 2:  # WORST
+        if s2 == 0:
+            # wm: D>Z, E>Z
+            for i in find_by_state(ids1, states1, [0, 1]):
+                for j in find_by_state(ids2, states2, [2]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+
+        elif s2 == 1:
+            # wb: D>Y, D>Z, E>Y, E>Z
+            for i in find_by_state(ids1, states1, [0, 1]):
+                for j in find_by_state(ids2, states2, [0, 2]):
+                    dok[(i, j)] = 1 + dok.get((i, j), 0)
+    # done
+    return dok
+
+
+def logical_infer(ids1, ids2, states1, states2, dok=None):
+    if dok is None:
+        dok = {}
+    # find common IDs, and loop over them
+    for uid in set(ids1).intersection(ids2):
+        try:
+            # find positions of the ID
+            p1, p2 = ids1.index(uid), ids2.index(uid)
+            # lookup states of the ID
+            s1, s2 = states1[p1], states2[p2]
+            # apply rules
+            dok = logical_rules(ids1, ids2, states1, states2, s1, s2, dok=dok)
+        except ValueError as err:
+            print(err)
+            continue
+    return dok

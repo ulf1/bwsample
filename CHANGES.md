@@ -1,3 +1,7 @@
+# 0.4.0 / 2021-02-13
+
+  * Identify pairs by logical inference between two BWS sets
+
 # 0.3.0 / 2021-02-12
 
   * Scaling of just two frequencies based on simple averaging

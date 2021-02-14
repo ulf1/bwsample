@@ -3,20 +3,27 @@
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
 Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, and count in dictionary of keys sparse matrix.
 
-## Usage
 Table of Contents
 
-* [Sampling: At least once, every `1/(I-1)`-th twice](#sampling-at-least-once-every-1i-1-th-twice)
-* [Sampling: Almost twice](#sampling-almost-twice)
+* [Sampling](#sampling)
+    * [At least once, every `1/(I-1)`-th twice](#at-least-once-every-1i-1-th-twice)
+    * [Almost twice](#almost-twice)
 * [Extract Pairs from evaluated an BWS set](#extract--pairs-from-one-evaluated-bws-set)
     * [Update dictionaries](#update-dictionaries)
     * [Convert dictionary to SciPy sparse matrix](#convert-dictionary-to-scipy-sparse-matrix)
-    * [Process multiple BWS sets](#process-multiple-bws-sets)
+    * [Batch Process BWS sets](#batch-process-bws-sets)
 * [Analyse Counts/Frequencies](#analyse-countsfrequencies)
-* ~~[Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)~~
+    * [Simple Ratios](#simple-ratios)
+    * [p-values based on Chi-Squared test](#p-values-based-on-chi-squared-test)
+    * [Ranking](#ranking)
+* [Extract Pairs by Logical Inference between BWS sets](#extract-pairs-by-logical-inference-between-bws-sets)
+    * [Logical Inference between two BWS sets]()
+    * [Update against a database]()
 
 
-### Sampling: At least once, every `1/(I-1)`-th twice
+## Sampling
+
+### At least once, every `1/(I-1)`-th twice
 In the following example, we generate the indicies of `n_sets=4` BWS sets.
 Each BWS set has `n_items=5` items.
 
@@ -69,7 +76,7 @@ bwsindices =
 ```
 
 
-### Sampling: Almost twice
+### Almost twice
 The function `indices_twice` also calls `indices_overlap` but connects the non-overlapping examples to new BWS sets.
 
 <img alt="Connect not overlapped examples to new BWS sets." src="/docs/bwsample-twice.png" width="300px">
@@ -117,7 +124,7 @@ bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
 
 
 
-### Extract ">" Pairs from one evaluated BWS set
+## Extract ">" Pairs from one evaluated BWS set
 We extract `>` (gt) relations only throughout the whole python module.
 
 ```python
@@ -213,7 +220,7 @@ cnts_all.todense()
 ```
 
 
-### Analyse Counts/Frequencies
+## Analyse Counts/Frequencies
 Generate a toy example:
 
 ```python
@@ -245,7 +252,8 @@ print(cnt.todense())
  [2. 0. 0. 2. 3. 0.]]
 ```
 
-Simple Ratios. The higher the ratio of (i,j), the better `Item[i]>Item[j]`.
+### Simple Ratios 
+The higher the ratio of (i,j), the better `Item[i]>Item[j]`.
 
 ```python
 from bwsample import scale_simple
@@ -264,6 +272,7 @@ The problem of simple ratios `(Nij - Nji)/(Nij + Nji)` is that the effect of the
  [ 1.     0.     0.     0.333  1.     0.   ]]
 ```
 
+### p-values based on Chi-Squared test
 Using the p-values of the Pearson Chi-Squared test (Approximates the discrete binomial test).
 Especially when a few frequencies become larger while other pairs exhibit low counts in the dataset, you should use `scale_pvalues` (instead of `scale_simple`).
 
@@ -292,6 +301,7 @@ In other words, low p-values means `Nij>Nji` might more true than `Nji>Nij`.
  [0.157 0.    0.    0.564 0.083 0.   ]]
 ```
 
+### Ranking
 Now we can sum each column, and sort it to get a ranking:
 
 ```python
@@ -308,8 +318,53 @@ bymappedid =
 ```
 
 
-### ~~Extract Pairs by Logical Inference between BWS sets~~
-...
+## Extract Pairs by Logical Inference between BWS sets
+
+### Logical Inference between two BWS sets
+```python
+from bwsample import logical_infer
+ids1, ids2 = ('D', 'E', 'F'), ('X', 'E', 'Z')
+states1, states2 = (1, 0, 2), (1, 0, 2)
+dok = logical_infer(ids1, ids2, states1, states2)
+```
+
+```
+{('D', 'Z'): 1, ('X', 'F'): 1}
+```
+
+### Update against a database
+
+```python
+from bwsample import logical_infer
+
+states1, ids1 = [1, 0, 0, 2], ['G', 'H', 'Z', 'I']
+
+db = [
+    ([1, 0, 0, 2], ['X', 'A', 'B', 'C']),
+    ([1, 0, 0, 2], ['D', 'X', 'E', 'F']),
+    ([1, 0, 0, 2], ['G', 'H', 'X', 'I']), 
+    ([1, 0, 0, 2], ['J', 'K', 'Z', 'X']), 
+    ([1, 0, 0, 2], ['Z', 'A', 'B', 'C']),
+    ([1, 0, 0, 2], ['D', 'Z', 'E', 'F'])
+]
+
+dok = {}
+for states2, ids2 in db:
+    dok = logical_infer(ids1, ids2, states1, states2, dok=dok)
+```
+
+```
+dok =
+{('G', 'I'): 2,
+ ('G', 'X'): 1,
+ ('J', 'I'): 1,
+ ('G', 'A'): 1,
+ ('G', 'B'): 1,
+ ('G', 'C'): 1,
+ ('G', 'F'): 1,
+ ('D', 'I'): 1}
+```
+
 
 ## Appendix
 
