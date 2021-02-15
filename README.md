@@ -38,13 +38,13 @@ examples = {
 
 
 ### Counting
-The function `bwsample.count` is an update function, i.e. you can provide previous count or resp. frequency data (e.g. `dok_all`, `db_infer`) or start from scratch (e.g. `dok_all=None`).
+The function `bwsample.count` is an update function, i.e. you can provide previous count or resp. frequency data (e.g. `dok_all`, `db_infer`) or start from scratch (e.g. `dok_all=None`). See example [here](/docs/count.ipynb)
 
 
 ```python
 import bwsample as bws
 dok_all, dok_direct, dok_best, dok_worst, dok_infer = bws.count(
-    evaluations, dok_all=dok_all, 
+    evaluations, dok_all=None, 
     dok_direct=None, dok_best=None, dok_worst=None, 
     dok_infer=None, db_infer=None)
 ```
@@ -65,7 +65,7 @@ The prefix `dok_..` means "Dictionary of Keys", a sparse matrix format, and has 
 - `'dok_direct'`  pairs of explicit best and worst examples within one BWS set.
 - `'dok_best'`   pairs of explicit best and unselected examples within one BWS set.
 - `'dok_worst'`  pairs of unselected and explicit worst examples within one BWS set.
-- `'dok_infer'`  logical inferred pairs from two BWS sets. Requires previous instances of BWS sets stored in `db_infer`; it has has the same data structure like `evaluations`. If `db_infer=None` then `evaluations` itself is used has database. [further details](/docs/counting-logical-inference.ipynb)
+- `'dok_infer'`  logical inferred pairs from two BWS sets. Requires previous instances of BWS sets stored in `db_infer`; it has has the same data structure like `evaluations`. If `db_infer=None` then `evaluations` itself is used has database. [further details](/docs/counting-logical-inference.ipynb). Make sure to insert new evaluations, e.g. `db_infer.extends(list(evaluations))`.
 
 
 ### Ranking
