@@ -4,6 +4,27 @@ import warnings
 from typing import List, Optional
 
 
+def sample(examples, n_sets, n_items, method='overlap',
+           shuffle=True):
+    # Generate BWS sets
+    if method in ('overlap'):
+        bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
+    elif method in ('twice'):
+        bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
+    else:
+        raise Exception(f"method='{method}' not availble.")
+
+    # enforce overflow if `index>=n`
+    n = len(examples)
+    oflowindices_ = [[idx % n for idx in indicies]
+                     for indicies in bwsindices]
+    # reshape data into BWS sets
+    reshaped = [[v for i, v in enumerate(examples) if i in indicies]
+                for indicies in oflowindices_]
+    # done
+    return reshaped
+
+
 def shuffle_subarrs(arrs, n_sets, n_items):
     rj = np.random.randint(1, n_items, n_sets)
     rk = np.random.randint(0, n_items - 1, n_sets)

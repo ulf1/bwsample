@@ -16,22 +16,23 @@ Table of Contents
 ### Sampling
 ```python
 import bwsample as bws
-samples = bws.sample(examples, n_sets, n_items, algorithms='overlap')
+samples = bws.sample(examples, n_sets, n_items, method='overlap')
 ```
 
-The input data `examples` for `bwsample.sample` should be structured as `Dict[ID,DATA]` with unique IDs as keys ([further details](/docs/sampling-preprocessing.ipynb)).
+The input data `examples` for `bwsample.sample` should be a `List[DATA]` ([further details](/docs/sampling-preprocessing.ipynb)), e.g.
 
 ```python
-examples = {
-    "id1": "data...",
-    "id2": ["other", "data"],
-    "id3": {"key", "value"},
-    "id4": "lorem",
-    "id5": "ipsum",
-    "id6": "blind",
-    "id7": "text"
-}
+examples = [
+    {"id": "id1", "data": "data..."},
+    {"id": "id2", "data": ["other", "data"]},
+    {"id": "id3", "data": {"key", "value"}},
+    {"id": "id4", "data": "lorem"},
+    {"id": "id5", "data": "ipsum"},
+    {"id": "id6", "data": "blind"},
+    {"id": "id7", "data": "text"}
+]
 ```
+
 
 `n_sets` is the requested number of BWS sets, and `n_items` the specified number of examples per BWS set. There are two algorithms available: `'overlap'` ([further details](/docs/sampling-overlap.ipynb)) and `'twice'` ([further details](/docs/sampling-twice.ipynb)).
 
