@@ -3,6 +3,7 @@ from .utils import to_scipy
 import numpy as np
 import scipy.sparse
 import scipy.linalg
+import scipy.stats
 
 
 def minmax(arr):
@@ -12,20 +13,20 @@ def minmax(arr):
     return (data - xmin) / (xmax - xmin)
 
 
-def ranking(dok, method='pvalue', **kwargs):
+def rank(dok, method='pvalue', **kwargs):
     cnt, indices = to_scipy(dok)
     if method in ('ratios'):
-        return rank_maximize_ratios(cnt, indices)
+        return ranking_maximize_ratios(cnt, indices)
     elif method in ('pvalue'):
-        return rank_minus_pvalues(cnt, indices)
+        return ranking_minus_pvalues(cnt, indices)
     elif method in ('transition'):
-        return rank_simulate_transition(cnt, indices, **kwargs)
+        return ranking_simulate_transition(cnt, indices, **kwargs)
     else:
         raise Exception(f"method='{method}' not availble.")
 
 
-def rank_maximize_ratios(cnt: scipy.sparse.csr_matrix,
-                         indices: List[str]):
+def ranking_maximize_ratios(cnt: scipy.sparse.csr_matrix,
+                            indices: List[str]):
     # compute ratios
     cnt = cnt.tocsr()
     ratios = cnt + cnt.T
@@ -46,7 +47,7 @@ def rank_maximize_ratios(cnt: scipy.sparse.csr_matrix,
     return ranked.tolist(), ordids, scores, ratios
 
 
-def rank_minus_pvalues(cnt, indices):
+def ranking_minus_pvalues(cnt, indices):
     # compute p-values for Nij>Nji or 1
     n, _ = cnt.shape
     P = scipy.sparse.dok_matrix((n, n), dtype=np.float64)
@@ -73,7 +74,7 @@ def rank_minus_pvalues(cnt, indices):
     return ranked.tolist(), ordids, scores, P
 
 
-def rank_simulate_transition(cnt, indices, n_rounds=3):
+def ranking_simulate_transition(cnt, indices, n_rounds=3):
     n = cnt.shape[0]
 
     # create generator matrix
