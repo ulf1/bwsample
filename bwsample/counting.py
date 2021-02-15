@@ -1,6 +1,42 @@
 from typing import List, Optional
 
 
+def count(evaluations, dok_all=None,
+          dok_direct=None, dok_best=None, dok_worst=None,
+          dok_infer=None, db_infer=None):
+    # extract from each BWS set
+    dok_all, dok_direct, dok_best, dok_worst = extract_pairs_batch2(
+        evaluations, dok_all=dok_all, dok_direct=dok_direct,
+        dok_best=dok_best, dok_worst=dok_worst)
+
+    # search for logical inferences
+    dok_infer = logical_infer_update(
+        evaluations, dok_infer=dok_infer, db_infer=db_infer)
+    # add to dok_all
+    for key, val in dok_infer.items():
+        dok_all[key] = val + dok_all.get(key, 0)
+
+    # done
+    return dok_all, dok_direct, dok_best, dok_worst, dok_infer
+
+
+def logical_infer_update(evaluations, dok_infer=None, db_infer=None):
+    # Create DoK
+    if dok_infer is None:
+        dok_infer = {}
+    # Create new database
+    if db_infer is None:
+        db_infer = list(evaluations)
+
+    # start searching for logical inferences
+    for states1, ids1 in evaluations:
+        for states2, ids2 in db_infer:
+            dok_infer = logical_infer(
+                ids1, ids2, states1, states2, dok=dok_infer)
+    # done
+    return dok_infer
+
+
 def extract_pairs(stateids: List[str],
                   combostates: List[int],
                   dok_all: Optional[dict] = None,
@@ -125,7 +161,8 @@ def extract_pairs(stateids: List[str],
     return dok_all, dok_direct, dok_best, dok_worst
 
 
-def extract_pairs_batch(evaluated_combostates, mapped_sent_ids):
+def extract_pairs_batch(evaluated_combostates, mapped_sent_ids, dok_all=None,
+                        dok_direct=None, dok_best=None, dok_worst=None):
     """Loop over an batch of BWS sets
 
     Example:
@@ -139,16 +176,26 @@ def extract_pairs_batch(evaluated_combostates, mapped_sent_ids):
         cnts_all, indicies = to_scipy(dok_all)
         cnts_all.todense()
     """
-    dok_all, dok_direct, dok_best, dok_worst = {}, {}, {}, {}
+    if dok_all is None:
+        dok_all = {}
+    if dok_direct is None:
+        dok_direct = {}
+    if dok_best is None:
+        dok_best = {}
+    if dok_worst is None:
+        dok_worst = {}
+
     for combostates, stateids in zip(*(evaluated_combostates,
                                        mapped_sent_ids)):
         dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
             stateids, combostates, dok_all=dok_all, dok_direct=dok_direct,
             dok_best=dok_best, dok_worst=dok_worst)
+
     return dok_all, dok_direct, dok_best, dok_worst
 
 
-def extract_pairs_batch2(data):
+def extract_pairs_batch2(data, dok_all=None,
+                         dok_direct=None, dok_best=None, dok_worst=None):
     """Loop over an batch of BWS sets
 
     Example:
@@ -162,11 +209,20 @@ def extract_pairs_batch2(data):
         cnts_all, indicies = to_scipy(dok_all)
         cnts_all.todense()
     """
-    dok_all, dok_direct, dok_best, dok_worst = {}, {}, {}, {}
+    if dok_all is None:
+        dok_all = {}
+    if dok_direct is None:
+        dok_direct = {}
+    if dok_best is None:
+        dok_best = {}
+    if dok_worst is None:
+        dok_worst = {}
+
     for combostates, stateids in data:
         dok_all, dok_direct, dok_best, dok_worst = extract_pairs(
             stateids, combostates, dok_all=dok_all, dok_direct=dok_direct,
             dok_best=dok_best, dok_worst=dok_worst)
+
     return dok_all, dok_direct, dok_best, dok_worst
 
 

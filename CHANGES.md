@@ -1,3 +1,8 @@
+# 0.5.0 / 2021-02-15
+
+  * Code refactoring
+  * Main wrapper functions: bws.sampling, bws.counting, bws.ranking
+
 # 0.4.0 / 2021-02-13
 
   * Identify pairs by logical inference between two BWS sets
