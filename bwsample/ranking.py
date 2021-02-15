@@ -31,8 +31,8 @@ def rank_maximize_ratios(cnt: scipy.sparse.csr_matrix,
     ratios = cnt + cnt.T
     ratios.data = 1.0 / ratios.data
     ratios = ratios.multiply(cnt)
-    #ratios = cnt / (cnt + cnt.T)
-    #ratios = np.nan_to_num(ratios)
+    # ratios = cnt / (cnt + cnt.T)
+    # ratios = np.nan_to_num(ratios)
 
     # sort, larger row sums are better
     rowsum = np.array(ratios.sum(axis=1).flatten())[0]
@@ -99,4 +99,3 @@ def rank_simulate_transition(cnt, indices, n_rounds=3):
 
     # done
     return ranked.tolist(), ordids, scores, (x, transmat)
-
