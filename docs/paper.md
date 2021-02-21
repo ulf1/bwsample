@@ -35,11 +35,13 @@ The two sampling algorithms are deployed in the REST API for an Web App.
 While the `'twice'` sampling algorithm ensures that *every* item is displayed to an user at least twice (Fig. \ref{fig:sample-twice}), the `'overlap'` algorithm samples the minimal number of items shown twice (Fig. \ref{fig:sample-overlap}).
 A possible research questions is: How many items has be show twice to gather a reasonable amount of counting or resp. frequency data?
 
-\twocolumn
+{\twocolumn
+
 ![Arrange items (A, B, C, ...) so that BWS sets overlap.\label{fig:sample-overlap}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-overlap.png)
 
 ![Connect non-overlapping items to further BWS sets so that very item is part of at least two BW sets.\label{fig:sample-twice}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-twice.png)
-\onecolumn
+
+}
 
 ## Counting
 The package provide two counting algorithms. First, counting directly extracted pairs from one BWS set (Fig. \ref{fig:bwsample-extract}). Second, counting logical inferred pairs by comparing two BWS sets with an overlapping item (Fig. \ref{fig:bwsample-logical}). 
