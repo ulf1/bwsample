@@ -1,3 +1,7 @@
+# 0.5.1 / 2021-02-21
+
+  * derive scores by solving an eigenvalue problem
+
 # 0.5.0 / 2021-02-15
 
   * Code refactoring
