@@ -36,15 +36,19 @@ While the `'twice'` sampling algorithm ensures that *every* item is displayed to
 A possible research questions is: How many items has be show twice to gather a reasonable amount of counting or resp. frequency data?
 
 
+\twocolumn
+
 ![Arrange items (A, B, C, ...) so that BWS sets overlap.\label{fig:sample-overlap}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-overlap.png){ width=49% }
 
 ![Connect non-overlapping items to further BWS sets so that very item is part of at least two BWS sets.\label{fig:sample-twice}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-twice.png){ width=49% }
+
+\onecolumn
 
 
 ## Counting
 The package provide two counting algorithms. First, counting directly extracted pairs from one BWS set (Fig. \ref{fig:bwsample-extract}). Second, counting logical inferred pairs by comparing two BWS sets with an overlapping item (Fig. \ref{fig:bwsample-logical}). 
 
-![Extracting pairwise comparisons from one BWS set.\label{fig:bwsample-extract}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-extract.png){ width=49% }
+![Extracting pairwise comparisons from one BWS set.\label{fig:bwsample-extract}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-extract.png){ width=33% }
 
 ![The nine combinations to logical infer pairwise comparisons from two BWS sets.\label{fig:bwsample-logical}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-logical.png)
 
