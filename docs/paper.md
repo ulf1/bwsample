@@ -24,8 +24,10 @@ bibliography: paper.bib
 `bwsample` is a Python package that provides algorithms to sample best-worst scaling sets (BWS sets), extract and count pairwise comparisons from user-evaluated BWS sets, and compute ranks and scores.
 
 # Statement of need
-We are using the `bwsample` package as part of an *Active Learning* experiment in which linguistics experts and lay people (crowdsourcing) judging sentences examples with the *Best-Worst Scaling* (BWS) method (Fig. \ref{fig:active-learning-process}).
-At least two methods or algorithms were implemented for sampling, counting and ranking, so that researchers can run A/B tests.
+We are using the `bwsample` package as part of an *Active Learning* experiment in which linguistics experts and lay people (crowdsourcing) are judging sentences examples with the *Best-Worst Scaling* (BWS) method (Fig. \ref{fig:active-learning-process}).
+BWS is *"... the cognitive process by which respondents repeatedly choose the two objects in varying sets of three or more objects that they feel exhibit the largest perceptual difference on an underlying continuum of interest"* [@finn1992, pp.13].
+In our context, BWS is primarily used as a means of data collection.
+At least two methods or algorithms are implemented for sampling, counting and ranking, so that researchers can run A/B tests.
 
 ![Using `bwsample` (`bws`) in an Active Learning experiment.\label{fig:active-learning-process}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-process.png)
 
@@ -61,6 +63,8 @@ what is serializable as JSON and storable in key-value databases.
 For example, the data `{("id1", "id2"): 345, ("id2", "id1"): 678}` means that relation `id1>id2` was measured 345 times, and the contradicting relation `id2>id1` was counted 678 times.
 
 ## Ranking and Scoring
+
+### Simple Ratios
 Ranks and scores based on *simple ratios* are computed as follows:
 
 1. Compute all ratios $\mu_{ij} = \frac{N_{ij}}{N_{ij} + N_{ji}} \; \forall i,j$
@@ -69,7 +73,8 @@ Ranks and scores based on *simple ratios* are computed as follows:
 
 The *simple ratio* approach ignores the sample sizes $N_{ij} + N_{ji}$
 across different pairs $(i,j)$.
-Thus, `bwsample` provides a *p-value based* metric.
+
+### p-value based metric to rank
 The question which opposing frequency $N_{ij}$ or $N_{ji}$ is larger,
 can be treated as hypothesis test:
 
@@ -81,7 +86,7 @@ H_0: \mu = 0.5
 H_a: \mu > 0.5
 $$
 
-Instead of the discrete binomal test, the Pearson's $\chi^2$-test is implemented what can handle larger values of $N$ as it is based on a continuous distribution.
+The Pearson's $\chi^2$-test is implemented as alternative to the binomal test with its discrete distribution.
 The proposed *p-value based* metric $x_{ij}$ is defined as follows:
 
 $$
@@ -97,6 +102,11 @@ x_{ij} =
 $$
 
 Using $1-p$ allows to store a sparse matrix as we expect many pairs $(i,j)$ having no user evaluation at all.
+
+### Eigenvectors as scores
+[@saaty2003]
+
+### Estimate and simulate a transition matrix
 
 
 # Acknowledgements
