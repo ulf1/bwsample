@@ -2,6 +2,7 @@ from typing import List
 from .utils import to_scipy
 import numpy as np
 import scipy.sparse
+import scipy.sparse.linalg
 import scipy.linalg
 import scipy.stats
 
@@ -19,8 +20,10 @@ def rank(dok, method='pvalue', **kwargs):
         return ranking_maximize_ratios(cnt, indices)
     elif method in ('pvalue'):
         return ranking_minus_pvalues(cnt, indices)
+    elif method in ('eigen'):
+        return scoring_eigenvector(cnt, indices)
     elif method in ('transition'):
-        return ranking_simulate_transition(cnt, indices, **kwargs)
+        return transition_simulation(cnt, indices, **kwargs)
     else:
         raise Exception(f"method='{method}' not availble.")
 
@@ -33,7 +36,7 @@ def ranking_maximize_ratios(cnt: scipy.sparse.csr_matrix,
     ratios.data = 1.0 / ratios.data
     ratios = ratios.multiply(cnt)
     # ratios = cnt / (cnt + cnt.T)
-    # ratios = np.nan_to_num(ratios)
+    # ratios = np.nan_to_num(ratios, nan=0, posinf=0, neginf=0)
 
     # sort, larger row sums are better
     rowsum = np.array(ratios.sum(axis=1).flatten())[0]
@@ -74,7 +77,31 @@ def ranking_minus_pvalues(cnt, indices):
     return ranked.tolist(), ordids, scores, P
 
 
-def ranking_simulate_transition(cnt, indices, n_rounds=3):
+def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
+                        indices: List[str]):
+    """
+    see Saaty (2003), http://dx.doi.org/10.1016/S0377-2217(02)00227-8
+    """
+    # compute "positive reciprocal near consistent pairwise comparison matrix"
+    cnt = cnt.tocsr()
+    cntT = cnt.T
+    cntT.data = 1.0 / cntT.data
+    ratios = cnt.multiply(cntT)
+
+    # compute eigenvectors as scores
+    eigval, scores = scipy.sparse.linalg.eigs(ratios, k=1)
+    scores = np.abs(np.real(scores[:, 0]))
+
+    # sort, larger row sums are better
+    ranked = np.argsort(-scores)  # maximize
+    ordids = np.array(indices)[ranked].tolist()
+    scores = scores[ranked].tolist()
+
+    # done
+    return ranked.tolist(), ordids, scores, eigval
+
+
+def transition_simulation(cnt, indices, n_rounds=3):
     n = cnt.shape[0]
 
     # create generator matrix
