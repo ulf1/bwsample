@@ -5,13 +5,15 @@ Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from eval
 
 
 ## Usage
-
-Table of Contents
+The package `bwsample` addresses three areas:
 
 * [Sampling](#sampling)
 * [Counting](#counting)
 * [Ranking](#ranking)
 
+Within an Active Learning process the `bwsample` functions can be deployed as followed:
+
+![](/docs/bwsample-process.png)
 
 ### Sampling
 ```python
