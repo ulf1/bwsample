@@ -11,7 +11,7 @@ authors:
     orcid: 0000-0002-0440-4868
     affiliation: "1"
 affiliations:
- - name: Berlin-Brandenburgische Akademie der Wissenschaften, Berlin, Berlin, Germany
+ - name: Berlin-Brandenburgische Akademie der Wissenschaften, Berlin, Germany
    index: 1
 date: 13 February 2021
 codeRepository: https://github.com/ulf1/bwsample
@@ -21,7 +21,7 @@ bibliography: paper.bib
 
 
 # Summary
-`bwsample` is a [@python3] package that provides algorithms to sample best-worst scaling sets (BWS sets), extract and count pairwise comparisons from user-evaluated BWS sets, and compute ranks and scores.
+`bwsample` is a Python package that provides algorithms to sample best-worst scaling sets (BWS sets), extract and count pairwise comparisons from user-evaluated BWS sets, and compute ranks and scores.
 
 # Statement of need
 We are using the `bwsample` package as part of an *Active Learning* experiment in which linguistics experts and lay people (crowdsourcing) judging sentences examples with the *Best-Worst Scaling* (BWS) method (Fig. \ref{fig:active-learning-process}).
@@ -75,9 +75,9 @@ can be treated as hypothesis test:
 
 $$
 \mu = \frac{N_{ij}}{N_{ij} + N_{ji}}
-\\
+\qquad , \qquad
 H_0: \mu = 0.5
-\\
+\qquad , \qquad
 H_a: \mu > 0.5
 $$
 
@@ -88,7 +88,7 @@ $$
 x_{ij} = 
 \left \{
 \begin{aligned}
-& 1-p, & \text{if} \, N_{ij} > N_{ji} \\
+& 1-p_{ij}, & \text{if} \, N_{ij} > N_{ji} \\
 & 0, & \text{otherwise}
 \end{aligned} 
 \right.
