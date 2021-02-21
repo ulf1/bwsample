@@ -34,10 +34,10 @@ At least two methods or algorithms are implemented for sampling, counting and ra
 
 ## Sampling
 The two sampling algorithms are deployed in the REST API for an Web App. 
-While the `'twice'` sampling algorithm ensures that *every* item is displayed to an user at least twice (Fig. \ref{fig:sample-twice}), the `'overlap'` algorithm samples the minimal number of items shown twice (Fig. \ref{fig:sample-overlap}).
+While the `'twice'` sampling algorithm ensures that *every* item is displayed to an user at least twice (Fig. \ref{fig:sample-twice}), the `'overlap'` algorithm samples the minimal number of items shown twice.
 A possible research questions is: How many items has be show twice to gather a reasonable amount of counting or resp. frequency data?
 
-![Arrange items (A, B, C, ...) so that BWS sets overlap. Then connect non-overlapping items to further BWS sets so that very item is part of at least two BWS sets.\label{fig:sample-twice}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-twice.png){ width=49% }
+![Arrange items $[A, B, C, ...]$ so that BWS sets overlap. Then connect non-overlapping items to further BWS sets so that very item is part of at least two BWS sets.\label{fig:sample-twice}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-twice.png){ width=49% }
 
 
 
@@ -58,7 +58,7 @@ The benefit is that researcher can compare directly extracted pairs versus logic
 
 The count or resp. frequency data is organized as Dictionary of Keys (DoK) format.
 We assume that each item has an unique identifier (e.g. UUID4).
-In [@python3] the DoK has the data type `Dict[Tuple[ID,ID],uint]`, 
+In Python the DoK has the data type `Dict[Tuple[ID,ID],uint]`, 
 what is serializable as JSON and storable in key-value databases.
 For example, the data `{("id1", "id2"): 345, ("id2", "id1"): 678}` means that relation `id1>id2` was measured 345 times, and the contradicting relation `id2>id1` was counted 678 times.
 
@@ -103,10 +103,37 @@ $$
 
 Using $1-p$ allows to store a sparse matrix as we expect many pairs $(i,j)$ having no user evaluation at all.
 
+
 ### Eigenvectors as scores
-[@saaty2003]
+[@saaty2003] derives the scores from pairwise comparison data by solving a eigenvalue problem.
+Given the ratio matrix $A=(a_{ij})$
+
+$$
+a_{ij} = 
+\left \{
+\begin{aligned}
+& N_{ij} / N_{ji}, & \text{if} \, N_{ji} > 0 \\
+& 0, & \text{otherwise}
+\end{aligned} 
+\right.
+\quad
+\forall i,j
+$$
+
+the scalar $m$ the eigenvalue, and
+the scores $s_i$ the eigenvector, 
+we can solve equation
+
+$$
+A s = m s
+$$
+
 
 ### Estimate and simulate a transition matrix
+We compute a transition probability matrix $\Pr(k|j)$ of items being evaluated $e_k > e_j$.
+Assume our initial items are equally distributed with item probability $\pi_j = 1/N \; \forall j$,
+then we can predict $\pi_k = \pi_j \cdot \Pr(k|j)$.
+The most probable item $k^*$ that is evaluated $e_{k^*} > e_j$ will be $k^* = \arg\max(\pi_k)$.
 
 
 # Acknowledgements
