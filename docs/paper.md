@@ -36,15 +36,17 @@ While the `'twice'` sampling algorithm ensures that *every* item is displayed to
 A possible research questions is: How many items has be show twice to gather a reasonable amount of counting or resp. frequency data?
 
 
-\twocolumn
+\usepackage{multicol}
+
+\begin{multicols}{2}
 
 ![Arrange items (A, B, C, ...) so that BWS sets overlap.\label{fig:sample-overlap}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-overlap.png){ width=49% }
 
-\newpage
+\columnbreak
 
 ![Connect non-overlapping items to further BWS sets so that very item is part of at least two BWS sets.\label{fig:sample-twice}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-twice.png){ width=49% }
 
-\onecolumn
+\end{multicols}
 
 
 ## Counting
