@@ -82,10 +82,11 @@ ranked, ordids, scores, info = bws.ranking(dok, method='pvalue')
 
 The input data is a `dok_..` dictionary variable described in the [previous section](#counting). 
 
-There are three methods currently avaible to generate rankings und scores ([further details](/docs/ranking.ipynb)):
+There are three methods currently available to generate rankings und scores ([further details](/docs/ranking.ipynb)):
 
 * `'ratio'`: by highest sum of min-max-scaled pairs 
 * `'pvalue'`: by lowest sum of chi-squared tests' p-values 
+* `'eigen'`: derive scores by solving an eigenvalue problem [(Saaty, 2003)](http://dx.doi.org/10.1016/S0377-2217(02)00227-8)
 * `'transition'`: predict items that are probably evaluated better
 
 
