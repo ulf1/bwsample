@@ -35,31 +35,68 @@ The two sampling algorithms are deployed in the REST API for an Web App.
 While the `'twice'` sampling algorithm ensures that *every* item is displayed to an user at least twice (Fig. \ref{fig:sample-twice}), the `'overlap'` algorithm samples the minimal number of items shown twice (Fig. \ref{fig:sample-overlap}).
 A possible research questions is: How many items has be show twice to gather a reasonable amount of counting or resp. frequency data?
 
+![Arrange items (A, B, C, ...) so that BWS sets overlap. Then connect non-overlapping items to further BWS sets so that very item is part of at least two BWS sets.\label{fig:sample-twice}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-twice.png){ width=49% }
 
-\begin{minipage}[h]{.49\textwidth}
-
-![Arrange items (A, B, C, ...) so that BWS sets overlap.\label{fig:sample-overlap}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-overlap.png){ width=49% }
-
-\end{minipage}
-
-\begin{minipage}[h]{.49\textwidth}
-
-![Connect non-overlapping items to further BWS sets so that very item is part of at least two BWS sets.\label{fig:sample-twice}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-twice.png){ width=49% }
-
-\end{minipage}
 
 
 ## Counting
-The package provide two counting algorithms. First, counting directly extracted pairs from one BWS set (Fig. \ref{fig:bwsample-extract}). Second, counting logical inferred pairs by comparing two BWS sets with an overlapping item (Fig. \ref{fig:bwsample-logical}). 
+The package provide two counting algorithms. First, counting directly extracted pairs from one BWS set (Fig. \ref{fig:bwsample-extract}). We can distinct and separately count three cases
+
+- 1 time `BEST>WORST`,
+- $N_{items} - 2$ times `BEST>MIDDLE`, and
+- $N_{items} - 2$ times `MIDDLE>WORST`.
 
 ![Extracting pairwise comparisons from one BWS set.\label{fig:bwsample-extract}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-extract.png){ width=33% }
 
-![The nine combinations to logical infer pairwise comparisons from two BWS sets.\label{fig:bwsample-logical}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-logical.png)
+Second, counting logical inferred pairs by comparing two BWS sets with an overlapping item (Fig. \ref{fig:bwsample-logical}). 
+Any newly user-evaluated BWS set needs to be assessed against a database of BWS sets, i.e. the algorithm is $\mathcal{O}(n^2)$ complex.
+The benefit is that researcher can compare directly extracted pairs versus logical inferred pairs, e.g. are users consistent with their judgements? 
 
+![The seven cases to logical infer pairwise comparisons from two BWS sets.\label{fig:bwsample-logical}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-logical.png)
+
+The count or resp. frequency data is organized as Dictionary of Keys (DoK) format.
+We assume that each item has an unique identifier (e.g. UUID4).
+In [@python3] the DoK has the data type `Dict[Tuple[ID,ID],uint]`, 
+what is serializable as JSON and storable in key-value databases.
+For example, the data `{("id1", "id2"): 345, ("id2", "id1"): 678}` means that relation `id1>id2` was measured 345 times, and the contradicting relation `id2>id1` was counted 678 times.
 
 ## Ranking and Scoring
-For ranking and scoring the package provides three algorithms: Ranking based on simple ratios, ranking based on Chi-Square tests' p-values, or scoring based on the estimated and simulated transition matrix.
+Ranks and scores based on *simple ratios* are computed as follows:
 
+1. Compute all ratios $\mu_{ij} = \frac{N_{ij}}{N_{ij} + N_{ji}} \; \forall i,j$
+2. Compute the row sums $s_i = \sum_j \mu_{ij}$
+3. Rank by sorting $s_i$ in descending order; Or Min-Max scale $s_i$ values as the new score
+
+The *simple ratio* approach ignores the sample sizes $N_{ij} + N_{ji}$
+across different pairs $(i,j)$.
+Thus, `bwsample` provides a *p-value based* metric.
+The question which opposing frequency $N_{ij}$ or $N_{ji}$ is larger,
+can be treated as hypothesis test:
+
+$$
+\mu = \frac{N_{ij}}{N_{ij} + N_{ji}}
+\\
+H_0: \mu = 0.5
+\\
+H_a: \mu > 0.5
+$$
+
+Instead of the discrete binomal test, the Pearson's $\chi^2$-test is implemented what can handle larger values of $N$ as it is based on a continuous distribution.
+The proposed *p-value based* metric $x_{ij}$ is defined as follows:
+
+$$
+x_{ij} = 
+\left \{
+\begin{aligned}
+& 1-p, & \text{if} \, N_{ij} > N_{ji} \\
+& 0, & \text{otherwise}
+\end{aligned} 
+\right.
+\quad
+\forall i,j
+$$
+
+Using $1-p$ allows to store a sparse matrix as we expect many pairs $(i,j)$ having no user evaluation at all.
 
 
 # Acknowledgements
