@@ -1,3 +1,8 @@
+# 0.5.2 / 2021-02-22
+
+  * Platt scaling added from scikit-learn
+  * sparse averaging for ratio-based and p-value-based ranking
+
 # 0.5.1 / 2021-02-21
 
   * derive scores by solving an eigenvalue problem
