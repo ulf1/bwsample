@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Tuple, Optional
 from .utils import to_scipy
 import numpy as np
 import scipy.sparse
@@ -16,8 +16,9 @@ def minmax(arr: np.array) -> np.array:
     return (data - xmin) / (xmax - xmin)
 
 
-def calibrate(scores: np.array, labels: np.array,
-              method: str = None) -> np.array:
+def calibrate(scores: np.array,
+              labels: np.array,
+              method: Optional[str] = None) -> np.array:
     """Wrapper function to calibrate scores with its binary labels
 
     Parameters:
@@ -44,6 +45,7 @@ def calibrate(scores: np.array, labels: np.array,
     -----------
     Platt, J., 1999. Probabilistic outputs for support vector machines and
         comparisons to regularized likelihood methods.
+
     Zadrozny, B., Elkan, C., 2002. Transforming classifier scores into
         accurate multiclass probability estimates, in: Proceedings of the
         Eighth ACM SIGKDD International Conference on Knowledge Discovery
@@ -64,17 +66,40 @@ def calibrate(scores: np.array, labels: np.array,
         return x
 
 
-def rank(dok, method='pvalue', **kwargs):
-    """
+def rank(dok: Dict[Tuple[str, str], int],
+         method: Optional[str]='pvalue', **kwargs):
+    """Rank and score items based on pairwise comparison frequencies
+
     Parameters:
     -----------
+    dok : Dict[Tuple[str, str], int]
+        Count/Frequency data as Dictionary of Keys (DoK)
+
+    method : Optional[str]
+        The procedure to compute ranks and scores.
+        - 'ratios'
+        - 'pvalue'
+        - 'eigen'
+        - 'transition'
 
     Returns:
     --------
+    ranked : List[int]
+        The array positions to order/sort the original data by indexing.
+
+    ordids : List[int]
+        The item IDs in the new order.
+
+    scores : List[float]
+        The scores for each item ID. Also sorted in descending order.
+
+    info
+        Output depends on the selected method
 
     Example:
     --------
-
+        import bwsample as bws
+        ranked, ordids, scores, info = bws.ranking(dok, method='pvalue')
     """
     cnt, indices = to_scipy(dok)
     if method in ('ratios'):
@@ -91,18 +116,53 @@ def rank(dok, method='pvalue', **kwargs):
 
 def ranking_maximize_ratios(cnt: scipy.sparse.csr_matrix,
                             indices: List[str],
-                            avg: str='exist',
-                            calibration: str='platt'):
-    """
+                            avg: Optional[str]='exist',
+                            calibration: Optional[str]='platt'):
+    """Rank items based simple ratios, and calibrate row sums as scores
+
     Parameters:
     -----------
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    indices : List[str]
+        Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
+
+    avg : Optional[str]
+        How to compute denominator for averaging.
+        - 'all': divide the sum of ratios by the row length
+        - 'exist': divide the sum of ratios by the number of ratios in the row
+
+    calibration: str (Default: None)
+        The calibrated scores. For 'platt' and 'isotonic' we assume
+          `label[i]=rowsum[i]>mean(rowsum)`.
 
     Returns:
     --------
+    ranked : List[int]
+        The array positions to order/sort the original data by indexing.
+
+    ordids : List[int]
+        The item IDs in the new order.
+
+    scores : List[float]
+        The scores for each item ID. Also sorted in descending order.
+
+    info
+        The matrix with the ratios
 
     Example:
     --------
-
+        import bwsample as bws
+        data = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        ranked, ordids, scores, ratios = bws.rank(
+            dok, method='ratio', avg='exist', calibration='platt')
     """
     # compute ratios
     cnt = cnt.tocsr()
@@ -138,18 +198,54 @@ def ranking_maximize_ratios(cnt: scipy.sparse.csr_matrix,
 
 def ranking_minus_pvalues(cnt: scipy.sparse.csr_matrix,
                           indices: List[str],
-                          avg: str='exist',
-                          calibration: str='platt'):
-    """
+                          avg: Optional[str]='exist',
+                          calibration: Optional[str]='platt'):
+    """Rank based on p-values of a Chi-Squard tests between reciprocal pairs,
+        and calibrate row sums as scores
+
     Parameters:
     -----------
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    indices : List[str]
+        Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
+
+    avg : Optional[str]
+        How to compute denominator for averaging.
+        - 'all': divide the sum of ratios by the row length
+        - 'exist': divide the sum of ratios by the number of ratios in the row
+
+    calibration: str (Default: None)
+        The calibrated scores. For 'platt' and 'isotonic' we assume
+          `label[i]=rowsum[i]>mean(rowsum)`.
 
     Returns:
     --------
+    ranked : List[int]
+        The array positions to order/sort the original data by indexing.
+
+    ordids : List[int]
+        The item IDs in the new order.
+
+    scores : List[float]
+        The scores for each item ID. Also sorted in descending order.
+
+    info
+        The matrix with the `1-p`-values
 
     Example:
     --------
-
+        import bwsample as bws
+        data = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        ranked, ordids, scores, (eigval, eigenvec) = bws.rank(
+            dok, method='pvalue', avg='exist', calibration='platt')
     """
     # compute p-values for Nij>Nji or 1
     n, _ = cnt.shape
@@ -195,10 +291,18 @@ def ranking_minus_pvalues(cnt: scipy.sparse.csr_matrix,
 
 def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
                         indices: List[str],
-                        calibration: str=None):
-    """
+                        calibration: Optional[str]=None):
+    """Compute the eigenvectors of the pairwise comparison matrix, and
+        calibrate eigenvectors as scores.
+
     Parameters:
     -----------
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    indices : List[str]
+        Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
+
     calibration: str (Default: None)
         The calibrated scores. For 'platt' and 'isotonic' we assume
           `label[i]=eigenvector[i]>0.5`. There is also the option to run
@@ -206,9 +310,30 @@ def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
 
     Returns:
     --------
+    ranked : List[int]
+        The array positions to order/sort the original data by indexing.
+
+    ordids : List[int]
+        The item IDs in the new order.
+
+    scores : List[float]
+        The scores for each item ID. Also sorted in descending order.
+
+    info
+        (eigval, eigenvec)
 
     Example:
     --------
+        import bwsample as bws
+        data = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        ranked, ordids, scores, (eigval, eigenvec) = bws.rank(
+            dok, method='eigen', calibration=None)
 
     References:
     -----------
@@ -248,25 +373,67 @@ def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
     return ranked.tolist(), ordids, scores.tolist(), (eigval, eigenvec)
 
 
-def transition_simulation(cnt, indices, n_rounds=3, calibration: str='platt'):
-    """
+def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
+                          indices: List[str],
+                          n_rounds: Optional[int]=3,
+                          calibration: Optional[str]='platt'):
+    """Estimate transition matrix of item_i>item_j, simulate the item
+        probabilities that are calibrated to scores.
 
     Parameters:
     -----------
-    calibration: str (Default: 'platt')
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    indices : List[str]
+        Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
+
+    calibration: Optional[str]  (Default: 'platt')
         The calibrated scores. We are predicting transition probabilities
           here, i.e. `SUM[transprob]=1`. Thus, we interpret `transprob[i]>1/N`
           as our true binary label for Platt Scaling (`'platt'`) and Isotonic
-          Regression (`'isotonic'`). We don't recommend using Min-Max-Scaling 
+          Regression (`'isotonic'`). We don't recommend using Min-Max-Scaling
           (`'minmax'`).
 
     Returns:
     --------
+    ranked : List[int]
+        The array positions to order/sort the original data by indexing.
 
+    ordids : List[int]
+        The item IDs in the new order.
+
+    scores : List[float]
+        The scores for each item ID. Also sorted in descending order.
+
+    info : Tuple
+        (x, transmat) `x` is is the predicted/simulated item probability,
+          and `transmat` the estimated transition probability matrix.
+
+    Approach:
+    ---------
+    1. Compute a transition probability matrix $\Pr(k|j)$ of items $e$
+        being evaluated $e_k > e_j$
+    2. Simulate the transition matrix
+        - The initial items are equally distributed with item
+            probability $\pi_j = 1/N \; \forall j$.
+        - Predict the probability of the items
+            $\pi_k = \pi_j \cdot \Pr(k|j)$
+    3. Calibrate the item probabilities $\pi_k$ to scores. Run Platt-Scaling
+        against binary labels $y=1_{\pi_k>1/N}$
 
     Example:
     --------
-
+        import bwsample as bws
+        data = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        ranked, ordids, scores, (x, transmat) = bws.rank(
+            dok, method='transition', n_rounds=3, calibration='platt')
     """
     n = cnt.shape[0]
 
