@@ -63,13 +63,14 @@ what is serializable as JSON and storable in key-value databases.
 For example, the data `{("id1", "id2"): 345, ("id2", "id1"): 678}` means that relation `id1>id2` was measured 345 times, and the contradicting relation `id2>id1` was counted 678 times.
 
 ## Ranking and Scoring
+Rank and score items based on pairwise comparison frequencies.
 
 ### Simple Ratios
 Ranks and scores based on *simple ratios* are computed as follows:
 
 1. Compute all ratios $\mu_{ij} = \frac{N_{ij}}{N_{ij} + N_{ji}} \; \forall i,j$
 2. Compute the row sums $s_i = \sum_j \mu_{ij}$
-3. Rank by sorting $s_i$ in descending order; Or Min-Max scale $s_i$ values as the new score
+3. Calibrate the values $s_i$ by Platt-Scaling as scores
 
 The *simple ratio* approach ignores the sample sizes $N_{ij} + N_{ji}$
 across different pairs $(i,j)$.
@@ -80,15 +81,15 @@ can be treated as hypothesis test:
 
 $$
 \mu = \frac{N_{ij}}{N_{ij} + N_{ji}}
-\qquad , \qquad
+\quad , \quad
 H_0: \mu = 0.5
-\qquad , \qquad
+\quad , \quad
 H_a: \mu > 0.5
 $$
 
 The Pearson's $\chi^2$-test is implemented as alternative to the binomal test with its discrete distribution.
-The proposed *p-value based* metric $x_{ij}$ is defined as follows:
 
+1. Compute *p-value based* metric $x_{ij}$. Using $1-p$ allows to store a sparse matrix as we expect many pairs $(i,j)$ having no user evaluation at all.
 $$
 x_{ij} = 
 \left \{
@@ -100,14 +101,15 @@ x_{ij} =
 \quad
 \forall i,j
 $$
+2. Sum each row $r_i = \sum_j x_{ij}$ and divide it by the actual number of row elements $n_i$
+3. Calibrate the values $r_i/n_i$ by Platt-Scaling as scores
 
-Using $1-p$ allows to store a sparse matrix as we expect many pairs $(i,j)$ having no user evaluation at all.
 
 
 ### Eigenvectors as scores
-[@saaty2003] derives the scores from pairwise comparison data by solving a eigenvalue problem.
-Given the ratio matrix $A=(a_{ij})$
+The idea is to solve pairwise comparison matrix as Eigenvalue-problem whereas the eigenvector can be interpreted as the items' scores [@saaty2003].
 
+1. Create a reciprocal pairwise comparison matrix $A=(a_{ij})$ with 
 $$
 a_{ij} = 
 \left \{
@@ -119,21 +121,18 @@ a_{ij} =
 \quad
 \forall i,j
 $$
-
-the scalar $m$ the eigenvalue, and
-the scores $s_i$ the eigenvector, 
-we can solve equation
-
-$$
-A s = m s
-$$
+2. Solve the Eigenvalue-problem $A x = m x$ with $m$ the eigenvalue and $x=[x_1, x_2, ...,x_N]$ the eigenvector,
+3. Calibrate the eigenvector $x$ by Platt-Scaling as scores
 
 
 ### Estimate and simulate a transition matrix
-We compute a transition probability matrix $\Pr(k|j)$ of items being evaluated $e_k > e_j$.
-Assume our initial items are equally distributed with item probability $\pi_j = 1/N \; \forall j$,
-then we can predict $\pi_k = \pi_j \cdot \Pr(k|j)$.
-The most probable item $k^*$ that is evaluated $e_{k^*} > e_j$ will be $k^* = \arg\max(\pi_k)$.
+Approach:
+
+1. Compute a transition probability matrix $\Pr(k|j)$ of items $e$ being evaluated $e_k > e_j$
+2. Simulate the transition matrix
+    - The initial items are equally distributed with item probability $\pi_j = 1/N \; \forall j$.
+    - Predict the probability of the items $\pi_k = \pi_j \cdot \Pr(k|j)$
+3. Calibrate the item probabilities $\pi_k$ to scores. Run Platt-Scaling against binary labels $y=1_{\pi_k>1/N}$
 
 
 # Acknowledgements
@@ -144,5 +143,6 @@ This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Researc
 
 - `NumPy` [https://github.com/numpy/numpy](https://github.com/numpy/numpy) [@numpy]
 - `SciPy` [https://github.com/scipy/scipy](https://github.com/scipy/scipy) [@scipy]
+- `scikit-learn` [https://github.com/scikit-learn/scikit-learn](https://github.com/scikit-learn/scikit-learn) [@scikit-learn] 
 
 # References
