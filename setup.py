@@ -29,7 +29,8 @@ setup(name='bwsample',
       install_requires=[
           'setuptools>=40.0.0',
           'numpy>=1.19.5',
-          'scipy>=1.5.4'
+          'scipy>=1.5.4',
+          'scikit-learn>=0.24.1'
       ],
       python_requires='>=3.6',
       zip_safe=True)
