@@ -99,6 +99,14 @@ def rank(dok: Dict[Tuple[str, str], int],
     Example:
     --------
         import bwsample as bws
+        data = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        dok, _, _, _ = bws.extract_pairs_batch2(data)
         ranked, ordids, scores, info = bws.ranking(dok, method='pvalue')
     """
     cnt, indices = to_scipy(dok)
@@ -161,6 +169,7 @@ def ranking_maximize_ratios(cnt: scipy.sparse.csr_matrix,
             ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
             ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
         )
+        dok, _, _, _ = bws.extract_pairs_batch2(data)
         ranked, ordids, scores, ratios = bws.rank(
             dok, method='ratio', avg='exist', calibration='platt')
     """
@@ -244,6 +253,7 @@ def ranking_minus_pvalues(cnt: scipy.sparse.csr_matrix,
             ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
             ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
         )
+        dok, _, _, _ = bws.extract_pairs_batch2(data)
         ranked, ordids, scores, (eigval, eigenvec) = bws.rank(
             dok, method='pvalue', avg='exist', calibration='platt')
     """
@@ -332,6 +342,7 @@ def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
             ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
             ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
         )
+        dok, _, _, _ = bws.extract_pairs_batch2(data)
         ranked, ordids, scores, (eigval, eigenvec) = bws.rank(
             dok, method='eigen', calibration=None)
 
@@ -420,6 +431,7 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
             ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
             ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
         )
+        dok, _, _, _ = bws.extract_pairs_batch2(data)
         ranked, ordids, scores, (x, transmat) = bws.rank(
             dok, method='transition', n_rounds=3, calibration='platt')
     """
