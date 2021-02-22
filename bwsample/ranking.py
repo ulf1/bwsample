@@ -57,17 +57,17 @@ def calibrate(scores: np.array,
     if method == 'platt':
         cls = sklearn.linear_model.LogisticRegression()
         cls.fit(X=scores.reshape(-1, 1), y=labels)
-        return cls.predict_proba( scores.reshape(-1, 1))[:, 1]
+        return cls.predict_proba(scores.reshape(-1, 1))[:, 1]
     elif method == 'isotonic':
         cls = sklearn.isotonic.IsotonicRegression(out_of_bounds='raise')
         cls.fit(X=scores, y=labels)
         return cls.transform(scores)
     else:
-        return x
+        return scores
 
 
 def rank(dok: Dict[Tuple[str, str], int],
-         method: Optional[str]='pvalue', **kwargs):
+         method: Optional[str] = 'pvalue', **kwargs):
     """Rank and score items based on pairwise comparison frequencies
 
     Parameters:
@@ -116,8 +116,8 @@ def rank(dok: Dict[Tuple[str, str], int],
 
 def ranking_maximize_ratios(cnt: scipy.sparse.csr_matrix,
                             indices: List[str],
-                            avg: Optional[str]='exist',
-                            calibration: Optional[str]='platt'):
+                            avg: Optional[str] = 'exist',
+                            calibration: Optional[str] = 'platt'):
     """Rank items based simple ratios, and calibrate row sums as scores
 
     Parameters:
@@ -198,8 +198,8 @@ def ranking_maximize_ratios(cnt: scipy.sparse.csr_matrix,
 
 def ranking_minus_pvalues(cnt: scipy.sparse.csr_matrix,
                           indices: List[str],
-                          avg: Optional[str]='exist',
-                          calibration: Optional[str]='platt'):
+                          avg: Optional[str] = 'exist',
+                          calibration: Optional[str] = 'platt'):
     """Rank based on p-values of a Chi-Squard tests between reciprocal pairs,
         and calibrate row sums as scores
 
@@ -291,7 +291,7 @@ def ranking_minus_pvalues(cnt: scipy.sparse.csr_matrix,
 
 def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
                         indices: List[str],
-                        calibration: Optional[str]=None):
+                        calibration: Optional[str] = None):
     """Compute the eigenvectors of the pairwise comparison matrix, and
         calibrate eigenvectors as scores.
 
@@ -375,8 +375,8 @@ def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
 
 def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
                           indices: List[str],
-                          n_rounds: Optional[int]=3,
-                          calibration: Optional[str]='platt'):
+                          n_rounds: Optional[int] = 3,
+                          calibration: Optional[str] = 'platt'):
     """Estimate transition matrix of item_i>item_j, simulate the item
         probabilities that are calibrated to scores.
 
@@ -409,18 +409,6 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
     info : Tuple
         (x, transmat) `x` is is the predicted/simulated item probability,
           and `transmat` the estimated transition probability matrix.
-
-    Approach:
-    ---------
-    1. Compute a transition probability matrix $\Pr(k|j)$ of items $e$
-        being evaluated $e_k > e_j$
-    2. Simulate the transition matrix
-        - The initial items are equally distributed with item
-            probability $\pi_j = 1/N \; \forall j$.
-        - Predict the probability of the items
-            $\pi_k = \pi_j \cdot \Pr(k|j)$
-    3. Calibrate the item probabilities $\pi_k$ to scores. Run Platt-Scaling
-        against binary labels $y=1_{\pi_k>1/N}$
 
     Example:
     --------
