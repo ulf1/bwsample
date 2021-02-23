@@ -442,10 +442,10 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
     rowsum = genmat.sum(axis=1)
     for i in range(n):
         genmat[i, i] = -rowsum[i]  # set diagonals to -sum(row)
-        genmat[i, :] /= rowsum[i]
+        genmat[i, :] /= max(1, rowsum[i])
 
     # compute transition matrix
-    transmat = scipy.linalg.expm(genmat.tocsc())
+    transmat = scipy.sparse.linalg.expm(genmat.tocsc())
 
     # simulation: transition from an item1 to the next item2
     #   that is most likely "item2 > item1"
