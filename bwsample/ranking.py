@@ -348,7 +348,7 @@ def scoring_orme(cnt: scipy.sparse.csr_matrix,
             dok_direct, method='omre', calibration='platt')
     References:
     -----------
-    Orme, B., 2009. MaxDiff Analysis: Simple Counting, Individual-Level 
+    Orme, B., 2009. MaxDiff Analysis: Simple Counting, Individual-Level
       Logit, and HB. https://api.semanticscholar.org/CorpusID:202605777
     """
     # compute ratios
