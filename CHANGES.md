@@ -1,6 +1,6 @@
 # 0.5.4 / 2021-02-22
 
-  * Scoring by Omre (2009) added to docs
+  * Scoring by Orme (2009) added to docs
 
 # 0.5.2 / 2021-02-22
 

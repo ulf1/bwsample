@@ -79,6 +79,7 @@ def rank(dok: Dict[Tuple[str, str], int],
         The procedure to compute ranks and scores.
         - 'ratios'
         - 'pvalue'
+        - 'orme'
         - 'eigen'
         - 'transition'
 
@@ -114,8 +115,8 @@ def rank(dok: Dict[Tuple[str, str], int],
         return ranking_maximize_ratios(cnt, indices, **kwargs)
     elif method in ('pvalue'):
         return ranking_minus_pvalues(cnt, indices, **kwargs)
-    elif method in ('omre'):
-        return scoring_omre(cnt, indices, **kwargs)
+    elif method in ('orme'):
+        return scoring_orme(cnt, indices, **kwargs)
     elif method in ('eigen'):
         return scoring_eigenvector(cnt, indices, **kwargs)
     elif method in ('transition'):
@@ -301,10 +302,10 @@ def ranking_minus_pvalues(cnt: scipy.sparse.csr_matrix,
     return ranked.tolist(), ordids, scores.tolist(), P
 
 
-def scoring_omre(cnt: scipy.sparse.csr_matrix,
+def scoring_orme(cnt: scipy.sparse.csr_matrix,
                  indices: List[str],
                  calibration: Optional[str] = 'platt'):
-    """Scoring based on Omre (2009)
+    """Scoring based on Orme (2009)
 
     Parameters:
     -----------
