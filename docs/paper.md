@@ -65,6 +65,16 @@ For example, the data `{("id1", "id2"): 345, ("id2", "id1"): 678}` means that re
 ## Ranking and Scoring
 Rank and score items based on pairwise comparison frequencies.
 
+### Orme's Scores
+An easy approach to compute scores is tocount only the items that have been labelled as best $N_{i}^{(\text{best})}$ and worst $N_{i}^{(\text{worst})}$ [@orme2009, @kiritchenko2016, @kiritchenko2017]:
+
+$$
+s_i = \frac{N_{i}^{(\text{best})} - N_{i}^{(\text{worst})}}{N_{i}^{(\text{all})}}
+$$
+
+Our main critique is that this approach ignores a great portion of extractable pairwise comparisons, what might motivates to sample a higher number of BWS sets for a given number of items.
+
+
 ### Simple Ratios
 Ranks and scores based on *simple ratios* are computed as follows:
 
