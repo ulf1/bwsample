@@ -78,6 +78,7 @@ def rank(dok: Dict[Tuple[str, str], int],
     method : Optional[str]
         The procedure to compute ranks and scores.
         - 'ratios'
+        - 'btl'
         - 'pvalue'
         - 'orme'
         - 'eigen'
@@ -115,6 +116,8 @@ def rank(dok: Dict[Tuple[str, str], int],
         return ranking_maximize_ratios(cnt, indices, **kwargs)
     elif method in ('pvalue'):
         return ranking_minus_pvalues(cnt, indices, **kwargs)
+    elif method in ('btl', 'bradley', 'hunter'):
+        return ranking_btl(cnt, indices, **kwargs)
     elif method in ('orme'):
         return scoring_orme(cnt, indices, **kwargs)
     elif method in ('eigen'):
@@ -540,3 +543,170 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
 
     # done
     return ranked.tolist(), ordids, scores.tolist(), (x, transmat)
+
+
+def mle_btl_sparse(cnt: scipy.sparse.csr_matrix,
+                   x0: Optional[np.array] = None,
+                   max_iter: Optional[int] = 50,
+                   tol: Optional[float] = 1e-5) -> (np.array, bool):
+    """MLE by Hunter (2004, p.386-387)
+
+    Parameters:
+    -----------
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    x0 : np.array
+        Initial values.
+
+    max_iter : int
+        maximum number of iterations
+
+    tol : float
+        termination criteria
+
+    Returns:
+    --------
+    gamma : np.array
+        Estimated gamma parameters. SUM[gammas]=1. The estimated
+          parameters can be used as scores
+
+    flag : bool
+        True if solution was found within `max_iter` optimization steps.
+        False if not.
+
+    References:
+    -----------
+    Hunter, D.R., 2004. MM algorithms for generalized Bradley-Terry models.
+      The Annals of Statistics 32, 384–406.
+      https://doi.org/10.1214/aos/1079120141
+    """
+    # ensure CSR format
+    cnt = cnt.tocsr()
+    m = cnt.shape[0]
+
+    # set initial values
+    if x0 is None:
+        x = np.ones(m) / m
+    else:
+        x = np.array(x0)
+        x = x / x.sum()
+
+    # rowsum, i.e. the number of wins `W_i`
+    rowsum = cnt.sum(axis=1)
+
+    # copy sparse structure for `yi + yj`
+    gamij = cnt.copy()
+    ridx, cidx = gamij.nonzero()
+
+    for k in range(max_iter):
+        # assign new weights
+        gamij[(ridx, cidx)] = x[ridx] + x[cidx]
+
+        # don't forget to use the inverse: [(Nij + Nji) / (yi + yj)]^{-1}
+        cntij = (cnt + cnt.T)
+        cntij.data = 1 / cntij.data
+        tmp = gamij.multiply(cntij)
+
+        # sum up rows, and elementwise multiply
+        gamk = np.multiply(rowsum, tmp.sum(axis=1))
+
+        # normalize to `gam_i^(k)`
+        x1 = gamk / gamk.sum(axis=0)
+
+        # abort
+        if np.linalg.norm(x1 - x, ord=np.inf) < tol:
+            return np.array(x1.flatten())[0], True
+
+        # update
+        x = x1
+
+    # last result
+    return np.array(x1.flatten())[0], False
+
+
+def ranking_btl(cnt: scipy.sparse.csr_matrix,
+                indices: List[str],
+                calibration: Optional[str] = 'platt',
+                prefit: Optional[bool] = True,
+                max_iter: Optional[int] = 50,
+                tol: Optional[float] = 1e-5):
+    """Bradley-Terry-Luce (BTL) probability model for pairwise comparisons
+
+    Parameters:
+    -----------
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    indices : List[str]
+        Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
+
+    calibration: str (Default: None)
+        The calibrated scores. For 'platt' and 'isotonic' we assume
+          `label[i]=mleparams[i]>1/N`. There is also the option to run
+          Min-Max-Scaling (`'minmax'`) but won't recommend using it.
+
+    prefit : bool
+        flag to prefit parameters with 'ratio' method
+        (see `ranking_maximize_ratios`)
+
+    max_iter : int  (see `mle_btl_sparse`)
+        maximum number of iterations
+
+    tol : float  (see `mle_btl_sparse`)
+        termination criteria
+
+    Returns:
+    --------
+    ranked : List[int]
+        The array positions to order/sort the original data by indexing.
+
+    ordids : List[int]
+        The item IDs in the new order.
+
+    scores : List[float]
+        The scores for each item ID. Also sorted in descending order.
+
+    info
+        x are the estimated MLE parameters that can be used for scoring
+
+    Example:
+    --------
+        import bwsample as bws
+        data = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        dok, _, _, _ = bws.extract_pairs_batch2(data)
+        ranked, ordids, scores, x = bws.rank(
+            dok, method='btl', calibration='platt')
+    """
+    cnt = cnt.tocsr()
+    x0 = None
+    if prefit:
+        ratios = cnt + cnt.T
+        ratios.data = 1.0 / ratios.data
+        ratios = ratios.multiply(cnt)
+        x0 = np.array(ratios.sum(axis=1).flatten())[0]
+        x0 = minmax(x0)
+
+    # estimate Bradley-Terry-Luce model parameters as metric
+    x, flag = mle_btl_sparse(cnt, x0=x0, max_iter=max_iter, tol=tol)
+
+    # sort, larger state probabilities are better
+    ranked = np.argsort(-x)  # maximize
+    ordids = np.array(indices)[ranked].tolist()
+    scores = x[ranked]
+
+    # calibrate scores
+    if calibration in ('platt', 'isotonic'):
+        labels = scores > 1.0 / len(scores)  # TRUE: s>1/N
+        scores = calibrate(scores, labels, method=calibration)
+    elif calibration == 'minmax':
+        scores = minmax(scores)
+
+    # done
+    return ranked.tolist(), ordids, scores.tolist(), x
