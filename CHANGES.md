@@ -1,3 +1,7 @@
+# 0.5.5 / 2021-02-23
+
+  * Default settings changed for `transition_simulation`
+
 # 0.5.4 / 2021-02-22
 
   * Scoring by Orme (2009) added to docs

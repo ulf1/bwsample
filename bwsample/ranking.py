@@ -463,7 +463,7 @@ def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
 def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
                           indices: List[str],
                           n_rounds: Optional[int] = 3,
-                          calibration: Optional[str] = 'platt'):
+                          calibration: Optional[str] = 'minmax'):
     """Estimate transition matrix of item_i>item_j, simulate the item
         probabilities that are calibrated to scores.
 
@@ -477,9 +477,7 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
 
     calibration: Optional[str]  (Default: 'platt')
         The calibrated scores. We are predicting transition probabilities
-          here, i.e. `SUM[transprob]=1`. Thus, we interpret `transprob[i]>1/N`
-          as our true binary label for Platt Scaling (`'platt'`) and Isotonic
-          Regression (`'isotonic'`). We don't recommend using Min-Max-Scaling
+          here, i.e. `SUM[transprob]=1`. Thus, recommend using Min-Max-Scaling
           (`'minmax'`).
 
     Returns:
@@ -627,7 +625,7 @@ def mle_btl_sparse(cnt: scipy.sparse.csr_matrix,
 
 def ranking_btl(cnt: scipy.sparse.csr_matrix,
                 indices: List[str],
-                calibration: Optional[str] = 'platt',
+                calibration: Optional[str] = 'minmax',
                 prefit: Optional[bool] = True,
                 max_iter: Optional[int] = 50,
                 tol: Optional[float] = 1e-5):
@@ -642,9 +640,7 @@ def ranking_btl(cnt: scipy.sparse.csr_matrix,
         Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
 
     calibration: str (Default: None)
-        The calibrated scores. For 'platt' and 'isotonic' we assume
-          `label[i]=mleparams[i]>1/N`. There is also the option to run
-          Min-Max-Scaling (`'minmax'`) but won't recommend using it.
+        The calibrated scores. We recommend using Min-Max-Scaling (`'minmax'`)
 
     prefit : bool
         flag to prefit parameters with 'ratio' method

@@ -1,4 +1,4 @@
-__version__ = '0.5.4'
+__version__ = '0.5.5'
 
 from .sampling import (sample, indices_overlap, indices_twice)
 from .counting import (
