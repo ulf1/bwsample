@@ -1,3 +1,7 @@
+# 0.5.4 / 2021-02-22
+
+  * Scoring by Orme (2009) added to docs
+
 # 0.5.2 / 2021-02-22
 
   * Platt scaling added from scikit-learn
