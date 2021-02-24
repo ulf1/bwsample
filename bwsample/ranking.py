@@ -114,6 +114,8 @@ def rank(dok: Dict[Tuple[str, str], int],
         return ranking_maximize_ratios(cnt, indices, **kwargs)
     elif method in ('pvalue'):
         return ranking_minus_pvalues(cnt, indices, **kwargs)
+    elif method in ('omre'):
+        return scoring_omre(cnt, indices, **kwargs)
     elif method in ('eigen'):
         return scoring_eigenvector(cnt, indices, **kwargs)
     elif method in ('transition'):
@@ -297,6 +299,76 @@ def ranking_minus_pvalues(cnt: scipy.sparse.csr_matrix,
 
     # done
     return ranked.tolist(), ordids, scores.tolist(), P
+
+
+def scoring_omre(cnt: scipy.sparse.csr_matrix,
+                 indices: List[str],
+                 calibration: Optional[str] = 'platt'):
+    """Scoring based on Omre (2009)
+
+    Parameters:
+    -----------
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    indices : List[str]
+        Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
+
+    calibration: str (Default: None)
+        The calibrated scores. For 'platt' and 'isotonic' we assume
+          `label[i]=rowsum[i]>mean(rowsum)`.
+
+    Returns:
+    --------
+    ranked : List[int]
+        The array positions to order/sort the original data by indexing.
+
+    ordids : List[int]
+        The item IDs in the new order.
+
+    scores : List[float]
+        The scores for each item ID. Also sorted in descending order.
+
+    info
+        the ratios from [-1, +1]
+
+    Example:
+    --------
+        import bwsample as bws
+        data = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        _, dok_direct, _, _ = bws.extract_pairs_batch2(data)
+        ranked, ordids, scores, ratios = bws.rank(
+            dok_direct, method='omre', calibration='platt')
+    References:
+    -----------
+    Orme, B., 2009. MaxDiff Analysis: Simple Counting, Individual-Level 
+      Logit, and HB. https://api.semanticscholar.org/CorpusID:202605777
+    """
+    # compute ratios
+    cnt = cnt.tocsr()
+    metric = (cnt - cnt.T).sum(axis=1) / (cnt + cnt.T).sum(axis=1)
+    metric = np.array(metric.flatten())[0]
+
+    # sort, larger row sums are better
+    ranked = np.argsort(-metric)  # maximize
+    ordids = np.array(indices)[ranked].tolist()
+    scores = metric[ranked]
+
+    # calibrate scores
+    if calibration in ('platt', 'isotonic'):
+        labels = scores > 0  # TRUE: s>0
+        scores = calibrate(scores, labels, method=calibration)
+    elif calibration == 'minmax':
+        scores = minmax(scores)
+
+    # done
+    return ranked.tolist(), ordids, scores.tolist(), metric
 
 
 def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
