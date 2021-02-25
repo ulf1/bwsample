@@ -11,9 +11,6 @@ The package `bwsample` addresses three areas:
 * [Counting](#counting)
 * [Ranking](#ranking)
 
-Within an Active Learning process the `bwsample` functions can be deployed as followed:
-
-![](/docs/bwsample-process.png)
 
 ### Sampling
 ```python
@@ -62,7 +59,11 @@ evaluations = (
 )
 ```
 
-The prefix `dok_..` means "Dictionary of Keys", a sparse matrix format, and has the structure `Dict[Tuple[ID, ID], uint]` in our case, i.e. the number of `">"` (gt) relations two examples.
+The count or resp. frequency data is organized as Dictionary of Keys (DoK) format, a sparse matrix format.
+We assume that each item has an unique identifier (e.g. UUID4).
+In Python the DoK has the data type `Dict[Tuple[ID,ID],uint]`, 
+what is serializable as JSON and storable in key-value databases.
+For example, the data `{("id1", "id2"): 345, ("id2", "id1"): 678}` means that relation `id1>id2` was measured 345 times, and the contradicting relation `id2>id1` was counted 678 times.
 
 - `'dok_all'`  aggregate counts from extracted pairs (`'dok_direct'`, `'dok_best'`, `'dok_worst'`; [further details](/docs/counting-extract-pairs.ipynb)) plus logical inferred pairs (`'dok_infer'`).
 - `'dok_direct'`  pairs of explicit best and worst examples within one BWS set.
