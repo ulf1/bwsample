@@ -1,6 +1,7 @@
 # 0.5.5 / 2021-02-23
 
   * Default settings changed for `transition_simulation`
+  * regularize zero-elements in `mle_btl_sparse`
 
 # 0.5.4 / 2021-02-22
 
