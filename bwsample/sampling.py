@@ -4,15 +4,48 @@ import warnings
 from typing import List, Optional
 
 
-def sample(examples, n_sets, n_items, method='overlap',
-           shuffle=True):
+def sample(examples: list, n_items: int, method: str='overlap',
+           shuffle: bool=True, n_sets=None) -> List[list]:
+    """Sample BWS sets from a list of examples
+
+    Parameters:
+    -----------
+    examples : list
+        A list of examples
+
+    n_items : int
+        Number items per BWS set
+
+    method : str='overlap'
+        'overlap' or 'twice'
+
+    shuffle : bool=True
+        Flag to permute/shuffle indices
+
+    Return:
+    -------
+    samples: List[List[DATA]]
+        A list of BWS sets. Each BWS set is a list of n_items sampled examples
+
+    Examples:
+    ---------
+        import bwsample as bws
+        examples = [chr(x) for x in range(ord('a'), ord('z')+1)]
+        samples = bws.sample(examples, n_items=4, method='overlap')
+    """
+    if n_sets:
+        warnings.warn(
+            "The parameter `n_sets` is deprecated and ignored.",
+            DeprecationWarning, stacklevel=2)
+
     # Generate BWS sets
+    n_sets = len(examples) // (n_items - 1)
     if method in ('overlap'):
         bwsindices, n_examples = indices_overlap(n_sets, n_items, shuffle)
     elif method in ('twice'):
         bwsindices, n_examples = indices_twice(n_sets, n_items, shuffle)
     else:
-        raise Exception(f"method='{method}' not availble.")
+        raise Exception(f"method='{method}' not available.")
 
     # enforce overflow if `index>=n`
     n = len(examples)
