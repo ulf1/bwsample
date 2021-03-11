@@ -4,8 +4,8 @@ import warnings
 from typing import List, Optional
 
 
-def sample(examples: list, n_items: int, method: str='overlap',
-           shuffle: bool=True, n_sets=None) -> List[list]:
+def sample(examples: list, n_items: int, method: str = 'overlap',
+           shuffle: bool = True, n_sets=None) -> List[list]:
     """Sample BWS sets from a list of examples
 
     Parameters:
