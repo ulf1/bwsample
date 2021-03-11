@@ -1,8 +1,15 @@
 [![PyPI version](https://badge.fury.io/py/bwsample.svg)](https://badge.fury.io/py/bwsample)
+[![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
 
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
-Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, and count in dictionary of keys sparse matrix.
+Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, count in dictionary of keys sparse matrix, and compute scores based on it.
 
+## Installation
+The `bwsample` [git repo](http://github.com/ulf1/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
+
+```
+pip install bwsample>=0.6.0
+```
 
 ## Usage
 The package `bwsample` addresses three areas:
@@ -11,99 +18,20 @@ The package `bwsample` addresses three areas:
 * [Counting](#counting)
 * [Ranking](#ranking)
 
-
 ### Sampling
-```python
-import bwsample as bws
-samples = bws.sample(examples, n_sets, n_items, method='overlap')
-```
-
-The input data `examples` for `bwsample.sample` should be a `List[DATA]` ([further details](/docs/sampling-preprocessing.ipynb)), e.g.
-
-```python
-examples = [
-    {"id": "id1", "data": "data..."},
-    {"id": "id2", "data": ["other", "data"]},
-    {"id": "id3", "data": {"key", "value"}},
-    {"id": "id4", "data": "lorem"},
-    {"id": "id5", "data": "ipsum"},
-    {"id": "id6", "data": "blind"},
-    {"id": "id7", "data": "text"}
-]
-```
-
-
-`n_sets` is the requested number of BWS sets, and `n_items` the specified number of examples per BWS set. There are two algorithms available: `'overlap'` ([further details](/docs/sampling-overlap.ipynb)) and `'twice'` ([further details](/docs/sampling-twice.ipynb)).
-
 
 
 ### Counting
-The function `bwsample.count` is an update function, i.e. you can provide previous count or resp. frequency data (e.g. `dok_all`, `db_infer`) or start from scratch (e.g. `dok_all=None`). See example [here](/docs/count.ipynb)
-
-
-```python
-import bwsample as bws
-dok_all, dok_direct, dok_best, dok_worst, dok_infer = bws.count(
-    evaluations, dok_all=None, 
-    dok_direct=None, dok_best=None, dok_worst=None, 
-    dok_infer=None, db_infer=None)
-```
-
-The input data `evaluations` for `bwsample.count` should structured as `List[Tuple[List[State], List[ID]]]`. The labelling/annotation application should produce a list of item states `List[EvalState]` with the states `BEST:1`, `WORST:2` and `MIDDLE:0` for each item. And the corresponding list of IDs for each item or resp. example.
-
-```python
-evaluations = (
-    ([0, 0, 2, 1], ['id1', 'id2', 'id3', 'id4']), 
-    ([0, 1, 0, 2], ['id4', 'id5', 'id6', 'id7']),
-    ([1, 2, 0, 0], ['id7', 'id8', 'id9', 'id1'])
-)
-```
-
-The count or resp. frequency data is organized as Dictionary of Keys (DoK) format, a sparse matrix format.
-We assume that each item has an unique identifier (e.g. UUID4).
-In Python the DoK has the data type `Dict[Tuple[ID,ID],uint]`, 
-what is serializable as JSON and storable in key-value databases.
-For example, the data `{("id1", "id2"): 345, ("id2", "id1"): 678}` means that relation `id1>id2` was measured 345 times, and the contradicting relation `id2>id1` was counted 678 times.
-
-- `'dok_all'`  aggregate counts from extracted pairs (`'dok_direct'`, `'dok_best'`, `'dok_worst'`; [further details](/docs/counting-extract-pairs.ipynb)) plus logical inferred pairs (`'dok_infer'`).
-- `'dok_direct'`  pairs of explicit best and worst examples within one BWS set.
-- `'dok_best'`   pairs of explicit best and unselected examples within one BWS set.
-- `'dok_worst'`  pairs of unselected and explicit worst examples within one BWS set.
-- `'dok_infer'`  logical inferred pairs from two BWS sets. Requires previous instances of BWS sets stored in `db_infer`; it has has the same data structure like `evaluations`. If `db_infer=None` then `evaluations` itself is used has database. [further details](/docs/counting-logical-inference.ipynb). Make sure to insert new evaluations, e.g. `db_infer.extends(list(evaluations))`.
 
 
 ### Ranking
-The function `bwsample.ranking` computes python index variable with a proposed ordering (`ranked`), and ordered list of example IDs (`ordids`), min-max scaled scores (`scores`) and further information depdending on the selected `method`.
-
-
-```python
-import bwsample as bws
-ranked, ordids, scores, info = bws.ranking(dok, method='pvalue')
-```
-
-The input data is a `dok_..` dictionary variable described in the [previous section](#counting). 
-
-There are three methods currently available to generate rankings und scores ([further details](/docs/ranking.ipynb)):
-
-* `'ratio'`: by highest sum of min-max-scaled pairs 
-* `'pvalue'`: by lowest sum of chi-squared tests' p-values 
-* `'eigen'`: derive scores by solving an eigenvalue problem [(Saaty, 2003)](http://dx.doi.org/10.1016/S0377-2217(02)00227-8)
-* `'transition'`: predict items that are probably evaluated better
-
 
 
 
 ## Appendix
 
-### Installation
-The `bwsample` [git repo](http://github.com/ulf1/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
-
-```
-pip install bwsample
-pip install git+ssh://git@github.com/ulf1/bwsample.git
-```
-
 ### Install a virtual environment
+In order to run the Jupyter notebooks or want to work on this project (e.g. unit tests, syntax checks) you should install a Python virtual environment.
 
 ```
 python3.6 -m venv .venv
