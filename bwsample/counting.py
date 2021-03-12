@@ -7,7 +7,7 @@ from .utils import add_dok
 def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
           direct_dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
           direct_detail: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
-          use_logical: Optional[dict] = True,
+          use_logical: Optional[bool] = True,
           logical_dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
           logical_detail: Optional[dict] = None,
           logical_database: List[Tuple[List[ItemState], List[ItemID]]] = None,
@@ -18,9 +18,49 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
               Dict[Tuple[ItemID, ItemID], int],
               dict
           ):
-    """
-    `direct_...` directly extract from 1 BWS set
-    `logical_...` logical inference from 2 BWS sets
+    """Extract pairs from evaluated BWS sets
+
+    Parameters:
+    -----------
+    evaluations : List[Tuple[List[ItemState], List[ItemID]]]
+        A list of new BWS sets to be evaluated.
+
+    direct_dok : Dict[Tuple[ItemID, ItemID], int]
+        (default: None) Previously recorded frequencies for all directly
+          extracted pairs.
+
+    direct_detail : dict
+        (default: None) Previously recorded frequencies for each type of
+          pair: "BEST>WORST" (bw), "BEST>NOT" (bn), "NOT>WORST" (nw)
+
+    use_logical : Optional[bool] = True
+        flag to deactivate logical inference
+
+    logical_dok : Optional[Dict[Tuple[ItemID, ItemID], int]]
+        The previous counts/frequencies of logical inferred pairs
+          that need to be updated.
+
+    logical_detail : Optional[dict]
+        A dictionary of previously stored DOKs for each variant of
+          logically inferred pairs.
+
+    logical_database : List[Tuple[List[ItemState], List[ItemID]]]
+        A database of previously processed BWS sets
+    
+    Returns:
+    --------
+    logical_dok: Optional[Dict[Tuple[ItemID, ItemID], int]]
+        The counts/frequencies of logical inferred pairs.
+
+    logical_detail: Optional[dict]
+        A dictionary that stores seperate DOKs for each variant of
+          logically inferred pairs.
+    
+    Example:
+    --------
+        import bwsample as bws
+        agg_dok, dir_dok, dir_detail, logi_dok, logi_detail = bws.count(
+            evaluations)
     """
     # extract from each BWS set
     direct_dok, direct_detail = direct_extract_batch(
@@ -279,6 +319,14 @@ def logical_rules(
     s1, s2 : ItemState or int
         The item state of the overlapping item
 
+    dok : Dict[Tuple[ItemID, ItemID], int]
+        Previous counts/frequencies of logically inferred pairs.
+
+    dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
+        : Dict[Tuple[ItemID, ItemID], int]
+        Previously counts/frequencies for different variants of
+          logically inferred pairs counted separately
+
     Returns:
     --------
     dok : Dict[Tuple[ItemID, ItemID], int]
@@ -287,7 +335,7 @@ def logical_rules(
     dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
         : Dict[Tuple[ItemID, ItemID], int]
         The different variants of logically inferred pairs
-          counted seperatly
+          counted separately
 
     Example 1:
     ----------
@@ -299,14 +347,6 @@ def logical_rules(
             s1, s2 = states1[p1], states2[p2]
         ...
 
-    Example 2:
-    ----------
-        import bwsample as bws
-        states1, ids1 = (1, 0, 2), ('D', 'E', 'F')
-        states2, ids2 = (1, 0, 2), ('X', 'Y', 'D')
-        dok, nn, nb, nw, bn, bw, wn, wb = bws.counting.logical_infer(
-            ids1, ids2, states1, states2)
-    
     Literature:
     -----------
     Hamster, U. A. (2021, March 9). Extracting Pairwise Comparisons Data
@@ -391,10 +431,10 @@ def logical_rules(
 
 
 def logical_infer(
-        ids1, 
-        ids2, 
-        states1, 
-        states2, 
+        ids1: List[ItemID], 
+        ids2: List[ItemID], 
+        states1: List[ItemState], 
+        states2: List[ItemState], 
         dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
         dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
         dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
@@ -403,7 +443,45 @@ def logical_infer(
         dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
         dok_wn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
         dok_wb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None):
-    """
+    """Logical Inference between 2 BWS sets (See `logical_rules`)
+
+    Parameters:
+    -----------
+    ids1, ids2: List[ItemID] or List[str]
+        List of IDs
+    
+    states1, states2: List[ItemState] or List[int]
+        Combinatorial states, i.e. a list of item states. Each item state is
+          encoded as
+          - 0: NOT
+          - 1: BEST
+          - 2: WORST
+
+    dok : Dict[Tuple[ItemID, ItemID], int]
+        Previous counts/frequencies of logically inferred pairs.
+
+    dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
+        : Dict[Tuple[ItemID, ItemID], int]
+        Previously counts/frequencies for different variants of
+          logically inferred pairs counted separately
+
+    Returns:
+    --------
+    dok : Dict[Tuple[ItemID, ItemID], int]
+        Aggregate counts
+    
+    dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
+        : Dict[Tuple[ItemID, ItemID], int]
+        The different variants of logically inferred pairs
+          counted separately
+
+    Example:
+    --------
+        import bwsample as bws
+        states1, ids1 = (1, 0, 2), ('D', 'E', 'F')
+        states2, ids2 = (1, 0, 2), ('X', 'Y', 'D')
+        dok, nn, nb, nw, bn, bw, wn, wb = bws.counting.logical_infer(
+            ids1, ids2, states1, states2)
     """
     if dok is None:
         dok = {}
@@ -447,11 +525,36 @@ def logical_infer(
 
 def logical_infer_update(
         evaluations: List[Tuple[List[ItemState], List[ItemID]]],
-        database: List[Tuple[List[ItemState], List[ItemID]]] = None,   # db_infer
+        database: List[Tuple[List[ItemState], List[ItemID]]] = None,
         dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
         detail: Optional[dict] = None) -> (
             Dict[Tuple[ItemID, ItemID], int], dict):
-    """
+    """Run logical inference from a batch/list of BWS sets against ad database
+
+    Parameters:
+    -----------
+    evaluations: List[Tuple[List[ItemState], List[ItemID]]]
+        A list of new BWS sets to be evaluated.
+
+    database: List[Tuple[List[ItemState], List[ItemID]]]
+        A database of previously processed BWS sets
+
+    dok: Optional[Dict[Tuple[ItemID, ItemID], int]]
+        The previous counts/frequencies of logical inferred pairs
+          that need to be updated.
+
+    detail: Optional[dict]
+        A dictionary of previously stored DOKs for each variant of
+          logically inferred pairs.
+
+    Returns:
+    --------
+    dok: Optional[Dict[Tuple[ItemID, ItemID], int]]
+        The counts/frequencies of logical inferred pairs.
+
+    detail: Optional[dict]
+        A dictionary that stores seperate DOKs for each variant of
+          logically inferred pairs.
     """
     # Create DoKs
     if dok is None:
@@ -470,13 +573,27 @@ def logical_infer_update(
 
     # Create new database
     if database is None:
-        database = list(evaluations)
+        database = evaluations.copy()
 
     # start searching for logical inferences
     for states1, ids1 in evaluations:
         for states2, ids2 in database:
-            dok = logical_infer(
-                ids1, ids2, states1, states2, dok=dok)
-    # done
-    return dok
+            (
+                dok, dok_nn, dok_nb, dok_nw,
+                dok_bn, dok_bw, dok_wn, dok_wb
+            ) = logical_infer(
+                ids1, ids2, states1, states2, 
+                dok=dok, dok_nn=dok_nn, dok_nb=dok_nb, dok_nw=dok_nw,
+                dok_bn=dok_bn, dok_bw=dok_bw, dok_wn=dok_wn, dok_wb=dok_wb)
+    
+    # copy details
+    detail["nn"] = dok_nn
+    detail["nb"] = dok_nb
+    detail["nw"] = dok_nw
+    detail["bn"] = dok_bn
+    detail["bw"] = dok_bw
+    detail["wn"] = dok_wn
+    detail["wb"] = dok_wb
 
+    # done
+    return dok, detail
