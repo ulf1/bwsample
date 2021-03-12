@@ -463,7 +463,7 @@ def scoring_eigenvector(cnt: scipy.sparse.csr_matrix,
 def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
                           indices: List[str],
                           n_rounds: Optional[int] = 3,
-                          calibration: Optional[str] = 'platt'):
+                          calibration: Optional[str] = 'minmax'):
     """Estimate transition matrix of item_i>item_j, simulate the item
         probabilities that are calibrated to scores.
 
@@ -477,9 +477,7 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
 
     calibration: Optional[str]  (Default: 'platt')
         The calibrated scores. We are predicting transition probabilities
-          here, i.e. `SUM[transprob]=1`. Thus, we interpret `transprob[i]>1/N`
-          as our true binary label for Platt Scaling (`'platt'`) and Isotonic
-          Regression (`'isotonic'`). We don't recommend using Min-Max-Scaling
+          here, i.e. `SUM[transprob]=1`. Thus, recommend using Min-Max-Scaling
           (`'minmax'`).
 
     Returns:
@@ -509,7 +507,7 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
         )
         dok, _, _, _ = bws.extract_pairs_batch2(data)
         ranked, ordids, scores, (x, transmat) = bws.rank(
-            dok, method='transition', n_rounds=3, calibration='platt')
+            dok, method='transition', n_rounds=3, calibration='minmax')
     """
     n = cnt.shape[0]
 
@@ -535,10 +533,7 @@ def transition_simulation(cnt: scipy.sparse.dok.dok_matrix,
     scores = x[ranked]
 
     # calibrate scores
-    if calibration in ('platt', 'isotonic'):
-        labels = scores > 1.0 / len(scores)  # TRUE: s>1/N
-        scores = calibrate(scores, labels, method=calibration)
-    elif calibration == 'minmax':
+    if calibration == 'minmax':
         scores = minmax(scores)
 
     # done
@@ -595,21 +590,27 @@ def mle_btl_sparse(cnt: scipy.sparse.csr_matrix,
     # rowsum, i.e. the number of wins `W_i`
     rowsum = cnt.sum(axis=1)
 
+    # count zero rows
+    zrow = m - (cnt > 0).sum(axis=1)
+
+    # add `Nij + Nji`
+    cntij = (cnt + cnt.T)
+    # pseudo inverse `[(Nij + Nji) / (yi + yj)]^{-1}`
+    cntij.data = 1 / cntij.data
+
     # copy sparse structure for `yi + yj`
-    gamij = cnt.copy()
+    gamij = cntij.copy()
     ridx, cidx = gamij.nonzero()
 
     for k in range(max_iter):
         # assign new weights
         gamij[(ridx, cidx)] = x[ridx] + x[cidx]
 
-        # don't forget to use the inverse: [(Nij + Nji) / (yi + yj)]^{-1}
-        cntij = (cnt + cnt.T)
-        cntij.data = 1 / cntij.data
+        # don't forget to use the inverse:
         tmp = gamij.multiply(cntij)
 
         # sum up rows, and elementwise multiply
-        gamk = np.multiply(rowsum, tmp.sum(axis=1))
+        gamk = np.multiply(rowsum, zrow + tmp.sum(axis=1))
 
         # normalize to `gam_i^(k)`
         x1 = gamk / gamk.sum(axis=0)
@@ -627,7 +628,7 @@ def mle_btl_sparse(cnt: scipy.sparse.csr_matrix,
 
 def ranking_btl(cnt: scipy.sparse.csr_matrix,
                 indices: List[str],
-                calibration: Optional[str] = 'platt',
+                calibration: Optional[str] = 'minmax',
                 prefit: Optional[bool] = True,
                 max_iter: Optional[int] = 50,
                 tol: Optional[float] = 1e-5):
@@ -642,9 +643,7 @@ def ranking_btl(cnt: scipy.sparse.csr_matrix,
         Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
 
     calibration: str (Default: None)
-        The calibrated scores. For 'platt' and 'isotonic' we assume
-          `label[i]=mleparams[i]>1/N`. There is also the option to run
-          Min-Max-Scaling (`'minmax'`) but won't recommend using it.
+        The calibrated scores. We recommend using Min-Max-Scaling (`'minmax'`)
 
     prefit : bool
         flag to prefit parameters with 'ratio' method
@@ -682,7 +681,7 @@ def ranking_btl(cnt: scipy.sparse.csr_matrix,
         )
         dok, _, _, _ = bws.extract_pairs_batch2(data)
         ranked, ordids, scores, x = bws.rank(
-            dok, method='btl', calibration='platt')
+            dok, method='btl', calibration='minmax')
     """
     cnt = cnt.tocsr()
     x0 = None
@@ -701,11 +700,8 @@ def ranking_btl(cnt: scipy.sparse.csr_matrix,
     ordids = np.array(indices)[ranked].tolist()
     scores = x[ranked]
 
-    # calibrate scores
-    if calibration in ('platt', 'isotonic'):
-        labels = scores > 1.0 / len(scores)  # TRUE: s>1/N
-        scores = calibrate(scores, labels, method=calibration)
-    elif calibration == 'minmax':
+    # calibrate scores (only minmax!)
+    if calibration == 'minmax':
         scores = minmax(scores)
 
     # done

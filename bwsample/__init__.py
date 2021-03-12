@@ -1,8 +1,7 @@
-__version__ = '0.5.4'
+__version__ = '0.6.0'
 
-from .sampling import (sample, indices_overlap, indices_twice)
-from .counting import (
-    count, extract_pairs, extract_pairs_batch, extract_pairs_batch2,
-    logical_infer)
-from .utils import (to_scipy)
+from .sampling import sample
+from .counting import count
+# logical_infer
+from .utils import (to_scipy, add_dok)
 from .ranking import (rank)
