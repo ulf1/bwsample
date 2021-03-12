@@ -1,15 +1,22 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Tuple
+ItemState = int
+ItemID = str
 
 
-
-def count(evaluations: list, 
-          direct_dok: dict = None,
-          direct_detail: dict = None,
-          use_logical: bool = True,
-          logical_dok: dict = None,
-          logical_detail: dict = None,
-          logical_database: list = None,
-          ) -> dict:
+def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
+          direct_dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+          direct_detail: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+          use_logical: Optional[dict] = True,
+          logical_dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+          logical_detail: Optional[dict] = None,
+          logical_database: List[Tuple[List[ItemState], List[ItemID]]] = None,
+          ) -> (
+              Dict[Tuple[ItemID, ItemID], int],
+              Dict[Tuple[ItemID, ItemID], int],
+              dict,
+              Dict[Tuple[ItemID, ItemID], int],
+              dict
+          ):
     """
     `direct_...` directly extract from 1 BWS set
     `logical_...` logical inference from 2 BWS sets
@@ -20,23 +27,28 @@ def count(evaluations: list,
 
     # search for logical inferences
     if use_logical:
-        dok_infer = logical_infer_update(
+        logical_dok = logical_infer_update(
             evaluations, database=logical_database,
             dok=logical_dok, detail=logical_detail)
-    
-    # add to dok_agg
-    for key, val in dok_infer.items():
-        dok_all[key] = val + dok_all.get(key, 0)
+
+    # merge agg_dok=direct_dok+logical_dok  
+    # TODO: utility function: `add_dok`
+    agg_dok = direct_dok.copy()
+    if use_logical:
+        for key, val in logical_dok.items():
+            agg_dok[key] = val + agg_dok.get(key, 0)
 
     # done
-    return dok_agg, direct_dok, direct_detail, logical_dok, logical_detail
+    return agg_dok, direct_dok, direct_detail, logical_dok, logical_detail
 
 
-def logical_infer_update(evaluations, 
-                         database=None,   # db_infer
-                         dok=None,   # dok_infer
+def logical_infer_update(evaluations,
+                         database: Dict[Tuple[ItemID, ItemID], int] = None,   # db_infer
+                         dok : Dict[Tuple[ItemID, ItemID], int] = None,   # dok_infer
                          detail=None
                         ):
+    """
+    """
     # Create DoK
     if dok_infer is None:
         dok_infer = {}
@@ -53,21 +65,25 @@ def logical_infer_update(evaluations,
     return dok_infer
 
 
-def direct_extract(stateids: List[str],
-                   combostates: List[int],
-                   dok: Optional[dict] = None,
-                   dok_bw: Optional[dict] = None,
-                   dok_bn: Optional[dict] = None,
-                   dok_nw: Optional[dict] = None) -> (
-                      dict, dict, dict, dict):
+def direct_extract(
+        stateids: List[ItemID],
+        combostates: List[ItemState],
+        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None) -> (
+            Dict[Tuple[ItemID, ItemID], int],
+            Dict[Tuple[ItemID, ItemID], int],
+            Dict[Tuple[ItemID, ItemID], int],
+            Dict[Tuple[ItemID, ItemID], int]):
     """Extract ">" Pairs from one evaluated BWS set
 
     Parameters:
     -----------
-    stateids: List[str]
+    stateids: List[ItemID]
         A list of IDs (e.g. uuid) corresponding to the `combostates` list.
 
-    combostates: List[int]
+    combostates: List[ItemState]
         Combinatorial state variable. Each element of the list
           - corresponds to an ID in the `stateids` list,
           - represents an item state variable (or the i-th FSM), and
@@ -77,21 +93,21 @@ def direct_extract(stateids: List[str],
             - 2: WORST
         (see TR-225)
 
-    dok: Optional[dict]
+    dok: Optional[Dict[Tuple[ItemID, ItemID], int]]
         Existing `dok` dictionary that is updated here. see below.
 
-    dok_bw: Optional[dict]
+    dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]]
         Existing `dok_bw` dictionary that is updated here. see below.
 
-    dok_bn: Optional[dict]
+    dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]]
         Existing `dok_bn` dictionary that is updated here. see below.
 
-    dok_nw: Optional[dict]
+    dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]]
         Existing `dok_nw` dictionary that is updated here. see below.
 
     Returns:
     --------
-    dok: dict
+    dok: Dict[Tuple[ItemID, ItemID], int]
         Dictionary with counts for each ">" pair, e.g. an
           entry `{..., ('B', 'C'): 1, ...} means `B>C` was counted `1` times.
         We can extract 3 types of pairs from 1 BWS set:
@@ -102,13 +118,13 @@ def direct_extract(stateids: List[str],
           of pairs. Use `dok_bw`, `dok_bn` and `dok_nw` for
           attribution analysis.
 
-    dok_bw: dict
+    dok_bw: Dict[Tuple[ItemID, ItemID], int]
         Dictionary with counts for explicit "BEST > WORST" pairs.
 
-    dok_bn: dict
+    dok_bn: Dict[Tuple[ItemID, ItemID], int]
         Dictionary with counts for "BEST > NOT" pairs.
 
-    dok_nw: dict
+    dok_nw: Dict[Tuple[ItemID, ItemID], int]
         Dictionary with counts for "NOT > WORST" pairs.
 
     Examples:
@@ -125,8 +141,8 @@ def direct_extract(stateids: List[str],
         stateids = ['D', 'E', 'F', 'A']
         combostates = [0, 1, 0, 2]
         dok, dok_bw, dok_bn, dok_nw = bws.counting.direct_extract(
-            stateids, combostates, dok=dok, dok_bw=dok_bw,
-            dok_bn=dok_bn, dok_nw=dok_nw)
+            stateids, combostates, dok=dok,
+            dok_bw=dok_bw, dok_bn=dok_bn, dok_nw=dok_nw)
     """
     if len(stateids) != len(combostates):
         raise Exception("IDs and states lists must have the same length")
@@ -177,11 +193,34 @@ def direct_extract(stateids: List[str],
     return dok, dok_bw, dok_bn, dok_nw
 
 
-def direct_extract_batch(evaluations, 
-                         dok=None,   # dok_all
-                         detail=None   # {dok_direct, dok_best, dok_worst}
-                        ):
+def direct_extract_batch(
+        evaluations: List[Tuple[List[ItemState], List[ItemID]]],
+        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        detail: Optional[dict] = None) -> (
+            Dict[Tuple[ItemID, ItemID], int], dict):
     """Loop over an batch of BWS sets
+
+    Parameters:
+    -----------
+    evaluations : List[Tuple[List[ItemState], List[ItemID]]]
+        A list of combinatorial states and associated identifiers.
+
+    dok : Dict[Tuple[ItemID, ItemID], int]
+        (default: None) Previously recorded frequencies for all directly
+          extracted pairs.
+
+    detail : dict
+        (default: None) Previously recorded frequencies for each type of
+          pair: "BEST>WORST" (bw), "BEST>NOT" (bn), "NOT>WORST" (nw)
+
+    Returns:
+    --------
+    dok : Dict[Tuple[ItemID, ItemID], int]
+        The new/updated frequencies for directly extracted pairs.
+
+    detail : dict
+        The new/updated frequencies for  for the types of directly extracted
+          pairs: "BEST>WORST" (bw), "BEST>NOT" (bn), "NOT>WORST" (nw)
 
     Example:
     -------
@@ -193,7 +232,7 @@ def direct_extract_batch(evaluations,
 
         cnts, indicies = bws.to_scipy(dok)
         cnts.todense()
-    
+
     Example 2:
     ----------
         evaluated_combostates = ([0, 0, 2, 1], [0, 1, 0, 2])
@@ -201,7 +240,7 @@ def direct_extract_batch(evaluations,
                            ['id4', 'id5', 'id6', 'id1'])
         evaluations = zip(*(evaluated_combostates, mapped_sent_ids))
     """
-    # intialize empty dict objects
+    # initialize empty dict objects
     if dok is None:
         dok = {}
     if detail is None:
@@ -237,30 +276,30 @@ def logical_rules(ids1, ids2, states1, states2, s1, s2, dok=None):
 
     if s1 == 0:  # 0:NOT
         if s2 == 0:  # 0:NOT
-            # mm: D>Z
+            # nn: D>Z
             for i in find_by_state(ids1, states1, [1]):
                 for j in find_by_state(ids2, states2, [2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
-            # mm: X>F
+            # nn: X>F
             for i in find_by_state(ids2, states2, [1]):
                 for j in find_by_state(ids1, states1, [2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
 
         elif s2 == 1:  # 1:BEST
-            # mb: D>Y, D>Z
+            # nb: D>Y, D>Z
             for i in find_by_state(ids1, states1, [1]):
                 for j in find_by_state(ids2, states2, [0, 2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
 
         elif s2 == 2:  # 2:WORST
-            # mw: X>F, Y>F
+            # nw: X>F, Y>F
             for j in find_by_state(ids1, states1, [2]):
                 for i in find_by_state(ids2, states2, [0, 1]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
 
     elif s1 == 1:  # 1:BEST
         if s2 == 0:
-            # bm: X>E, X>F
+            # bn: X>E, X>F
             for i in find_by_state(ids2, states2, [1]):
                 for j in find_by_state(ids1, states1, [0, 2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
@@ -273,7 +312,7 @@ def logical_rules(ids1, ids2, states1, states2, s1, s2, dok=None):
 
     elif s1 == 2:  # 2:WORST
         if s2 == 0:
-            # wm: D>Z, E>Z
+            # wn: D>Z, E>Z
             for i in find_by_state(ids1, states1, [0, 1]):
                 for j in find_by_state(ids2, states2, [2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)

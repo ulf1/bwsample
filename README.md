@@ -20,6 +20,7 @@ The package `bwsample` addresses three areas:
 
 
 ### Sampling
+**Input Data:**
 The input data `examples` for `bwsample.sample` should be a `List[anything]`.
 For example, `List[Dict[ID,DATA]]` with identifiers using the key `"id"` and the associated data using the key `"data"`, e.g.
 
@@ -35,6 +36,7 @@ examples = [
 ]
 ```
 
+**Call the function:**
 The number of items per BWS set `n_items` (`M`) must be specified, e.g. `n_items=4` if your App displays four items.
 The `'overlap'` algorithm assigns every `i*(M-1)+1`-th example to two consecutive BWS sets, so that `1/(M-1)` of examples are evaluated two times.
 The `'twice'` algorithm connects the remaining `(M-2)/(M-1)` non-overlapping from `'overlapping'` so that all examples occur twice.
@@ -45,6 +47,7 @@ import bwsample as bws
 samples = bws.sample(examples, n_items=4, method='overlap')
 ```
 
+**Output Data:**
 The output has the following structure
 
 ```
@@ -58,6 +61,48 @@ The output has the following structure
 
 
 ### Counting
+**Input Data:**
+The input data`evaluations` for `bwsample.count` should structured as `List[Tuple[List[ItemState], List[ItemID]]]`. 
+The labelling/annotation application should produce a list of item states `List[ItemState]` with the states `BEST:1`, `WORST:2` and `NOT:0` for each item. 
+And the corresponding list of IDs `List[ItemID]` for each item or resp. example.
+
+```python
+evaluations = (
+    ([0, 0, 2, 1], ['id1', 'id2', 'id3', 'id4']), 
+    ([0, 1, 0, 2], ['id4', 'id5', 'id6', 'id7']),
+    ([1, 2, 0, 0], ['id7', 'id8', 'id9', 'id1'])
+)
+```
+
+**Call the function:**
+
+```python
+import bwsample as bws
+agg_dok, direct_dok, direct_detail, logical_dok, logical_detail = bws.count(evaluations)
+```
+
+
+**Output Data:**
+The function `bwsample.count` outputs Dictionary of Keys (DOK) with the data strcuture `Dict[Tuple[ItemID, ItemID], int]`, e.g. `agg_dok`, `direct_dok`, `direct_detail["bw"]`, etc., what contain variants which pairs where counted:
+
+- `agg_dok`
+    - `direct_dok`
+        - `direct_detail["bw"]`
+        - `direct_detail["bn"]`
+        - `direct_detail["nw"]`
+    - `logical_dok`
+        - `logical_detail["nn"]`
+        - `logical_detail["nb"]`
+        - `logical_detail["nw"]`
+        - `logical_detail["bn"]`
+        - `logical_detail["bw"]`
+        - `logical_detail["wn"]`
+        - `logical_detail["wb"]`
+
+
+
+**Update Frequencies:**
+The function `bwsample.count` is an update function, i.e. you can provide previous count or resp. frequency data (e.g. `logical_dok`, `logical_database`) or start from scratch (e.g. `agg_dok=None`).
 
 
 ### Ranking
