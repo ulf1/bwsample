@@ -283,6 +283,7 @@ def direct_extract_batch(
 
 
 def find_by_state(ids, states, s_):
+    """Find indices of a certain state"""
     return [i for i, s in zip(*(ids, states)) if s in s_]
 
 
