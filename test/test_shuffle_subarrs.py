@@ -8,6 +8,7 @@ def test1():
         for v in out[i]:
             assert v in arrs[i]
 
+
 def test2():
     arrs = [[1, 2, 3], [4, 5, 6]]
     n_items = 3
