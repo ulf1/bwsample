@@ -2,6 +2,7 @@ import itertools
 import scipy.sparse
 import numpy as np
 from typing import Dict, Tuple, List
+ItemID = str
 
 
 def to_scipy(dok: Dict[Tuple[str, str], int], dtype=np.float64) -> (
@@ -37,3 +38,44 @@ def to_scipy(dok: Dict[Tuple[str, str], int], dtype=np.float64) -> (
     for (i, j), v in dok.items():
         cnt[idx.index(i), idx.index(j)] = v
     return cnt, idx
+
+
+def add_dok(a: Dict[Tuple[ItemID, ItemID], int],
+            b: Dict[Tuple[ItemID, ItemID], int]
+            ) -> Dict[Tuple[ItemID, ItemID], int]:
+    """Add counts of two Dictionary of Keys (DOK) objects
+
+    Parameters:
+    -----------
+    a, b : Dict[Tuple[ItemID, ItemID], int]
+        Two Dictionary of Keys (DOK) objects which values
+          are to be added.
+
+    Returns:
+    --------
+    out : Dict[Tuple[ItemID, ItemID], int]
+        A Dictionary of Keys (DOK) objects with the added values
+          for each key.
+    
+    Example:
+    --------
+        import bwsample as bws
+        a = {"key": 2, "misc": 3, ("id1", "id2"): 7}
+        b = {"misc": 1}
+        c = bws.add_dok(a, b)
+
+    """
+    if len(a) > len(b):
+        # copy a to output
+        out = a.copy()
+        # add b to output    
+        for key, val in b.items():
+            out[key] = val + out.get(key, 0)
+    else:
+        # copy b to output
+        out = b.copy()
+        # add a to output    
+        for key, val in a.items():
+            out[key] = val + out.get(key, 0)
+    # done
+    return out

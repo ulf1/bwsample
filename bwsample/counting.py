@@ -1,6 +1,7 @@
 from typing import List, Optional, Dict, Tuple
 ItemState = int
 ItemID = str
+from .utils import add_dok
 
 
 def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
@@ -32,11 +33,10 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
             dok=logical_dok, detail=logical_detail)
 
     # merge agg_dok=direct_dok+logical_dok  
-    # TODO: utility function: `add_dok`
-    agg_dok = direct_dok.copy()
     if use_logical:
-        for key, val in logical_dok.items():
-            agg_dok[key] = val + agg_dok.get(key, 0)
+        agg_dok = add_dok(logical_dok, direct_dok)
+    else:
+        agg_dok = direct_dok.copy()
 
     # done
     return agg_dok, direct_dok, direct_detail, logical_dok, logical_detail
