@@ -57,6 +57,10 @@ The output has the following structure
 
 **Warning**: `len(examples)` must be a multiple of `(n_items - 1)`
 
+**References:**
+
+- Section 5 (page 4) in: Hamster, U. A. (2021, March 9). Extracting Pairwise Comparisons Data from Best-Worst Scaling Surveys by Logical Inference. [https://doi.org/10.31219/osf.io/qkxej](https://doi.org/10.31219/osf.io/qkxej)
+
 
 ## Counting
 **Input Data:**
@@ -125,10 +129,28 @@ agg_dok, direct_dok, direct_detail, logical_dok, logical_detail = bws.count(
     logical_dok=logical_dok, logical_detail=logical_detail, logical_database=database)
 ```
 
+**References:**
+
+- Section 3-4 in: Hamster, U. A. (2021, March 9). Extracting Pairwise Comparisons Data from Best-Worst Scaling Surveys by Logical Inference. [https://doi.org/10.31219/osf.io/qkxej](https://doi.org/10.31219/osf.io/qkxej)
+
 
 ## Ranking
+**Input Data:**
+The input data is a Dictionary of Keys (DoK) object produced by `bwsample.count`. 
 
+**Call the function:**
+The function `bwsample.rank` computes a python index variable with a proposed ordering (`ranked`), and ordered list of example IDs (`ordids`), scores (`scores`) and further information depending on the selected `method`.
 
+```python
+import bwsample as bws
+ranked, ordids, scores, info = bws.ranking(dok, method='ratio')
+```
+
+**References:**
+
+- Eigenvector solution in: Saaty, T. L. (2003). Decision-making with the AHP: Why is the principal eigenvector nec- essary. European Journal of Operational Research, 145(1), 85–91. [https://doi.org/10.1016/S0377-2217(02)00227-8](https://doi.org/10.1016/S0377-2217(02)00227-8)
+- Estimating the BTL model in: Hunter, D. R. (2004). MM algorithms for generalized Bradley-Terry models. The Annals of Statistics, 32(1), 384–406. [https://doi.org/10.1214/aos/1079120141](https://doi.org/10.1214/aos/1079120141)
+- MaxDiff score in: Orme, B. (2009). MaxDiff Analysis: Simple Counting, Individual-Level Logit, and HB. [https://sawtoothsoftware.com/uploads/sawtoothsoftware/originals/f89a6537-1cae-4fb5-afad-9d325c2a3143.pdf](https://sawtoothsoftware.com/uploads/sawtoothsoftware/originals/f89a6537-1cae-4fb5-afad-9d325c2a3143.pdf)
 
 ## Appendix
 
