@@ -56,7 +56,7 @@ def add_dok(a: Dict[Tuple[ItemID, ItemID], int],
     out : Dict[Tuple[ItemID, ItemID], int]
         A Dictionary of Keys (DOK) objects with the added values
           for each key.
-    
+
     Example:
     --------
         import bwsample as bws
@@ -68,13 +68,13 @@ def add_dok(a: Dict[Tuple[ItemID, ItemID], int],
     if len(a) > len(b):
         # copy a to output
         out = a.copy()
-        # add b to output    
+        # add b to output
         for key, val in b.items():
             out[key] = val + out.get(key, 0)
     else:
         # copy b to output
         out = b.copy()
-        # add a to output    
+        # add a to output
         for key, val in a.items():
             out[key] = val + out.get(key, 0)
     # done

@@ -1,7 +1,7 @@
+from .utils import add_dok
 from typing import List, Optional, Dict, Tuple
 ItemState = int
 ItemID = str
-from .utils import add_dok
 
 
 def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
@@ -16,8 +16,7 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
               Dict[Tuple[ItemID, ItemID], int],
               dict,
               Dict[Tuple[ItemID, ItemID], int],
-              dict
-          ):
+              dict):
     """Extract pairs from evaluated BWS sets
 
     Parameters:
@@ -46,7 +45,7 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
 
     logical_database : List[Tuple[List[ItemState], List[ItemID]]]
         A database of previously processed BWS sets
-    
+
     Returns:
     --------
     logical_dok: Optional[Dict[Tuple[ItemID, ItemID], int]]
@@ -55,7 +54,7 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
     logical_detail: Optional[dict]
         A dictionary that stores seperate DOKs for each variant of
           logically inferred pairs.
-    
+
     Example:
     --------
         import bwsample as bws
@@ -72,7 +71,7 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
             evaluations, database=logical_database,
             dok=logical_dok, detail=logical_detail)
 
-    # merge agg_dok=direct_dok+logical_dok  
+    # merge agg_dok=direct_dok+logical_dok
     if use_logical:
         agg_dok = add_dok(logical_dok, direct_dok)
     else:
@@ -288,19 +287,19 @@ def find_by_state(ids, states, s_):
 
 
 def logical_rules(
-        ids1: List[ItemID], 
-        ids2: List[ItemID], 
-        states1: List[ItemState], 
-        states2: List[ItemState], 
-        s1: ItemState, 
-        s2: ItemState, 
-        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_wn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        ids1: List[ItemID],
+        ids2: List[ItemID],
+        states1: List[ItemState],
+        states2: List[ItemState],
+        s1: ItemState,
+        s2: ItemState,
+        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_wn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
         dok_wb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None):
     """Logical Inference rules
 
@@ -308,7 +307,7 @@ def logical_rules(
     -----------
     ids1, ids2: List[ItemID] or List[str]
         List of IDs
-    
+
     states1, states2: List[ItemState] or List[int]
         Combinatorial states, i.e. a list of item states. Each item state is
           encoded as
@@ -331,7 +330,7 @@ def logical_rules(
     --------
     dok : Dict[Tuple[ItemID, ItemID], int]
         Aggregate counts
-    
+
     dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
         : Dict[Tuple[ItemID, ItemID], int]
         The different variants of logically inferred pairs
@@ -350,7 +349,7 @@ def logical_rules(
     Literature:
     -----------
     Hamster, U. A. (2021, March 9). Extracting Pairwise Comparisons Data
-      from Best-Worst Scaling Surveys by Logical Inference. 
+      from Best-Worst Scaling Surveys by Logical Inference.
       https://doi.org/10.31219/osf.io/qkxej
     """
     if dok is None:
@@ -431,17 +430,17 @@ def logical_rules(
 
 
 def logical_infer(
-        ids1: List[ItemID], 
-        ids2: List[ItemID], 
-        states1: List[ItemState], 
-        states2: List[ItemState], 
-        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
-        dok_wn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        ids1: List[ItemID],
+        ids2: List[ItemID],
+        states1: List[ItemState],
+        states2: List[ItemState],
+        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        dok_wn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
         dok_wb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None):
     """Logical Inference between 2 BWS sets (See `logical_rules`)
 
@@ -449,7 +448,7 @@ def logical_infer(
     -----------
     ids1, ids2: List[ItemID] or List[str]
         List of IDs
-    
+
     states1, states2: List[ItemState] or List[int]
         Combinatorial states, i.e. a list of item states. Each item state is
           encoded as
@@ -469,7 +468,7 @@ def logical_infer(
     --------
     dok : Dict[Tuple[ItemID, ItemID], int]
         Aggregate counts
-    
+
     dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
         : Dict[Tuple[ItemID, ItemID], int]
         The different variants of logically inferred pairs
@@ -509,7 +508,7 @@ def logical_infer(
             s1, s2 = states1[p1], states2[p2]
             # apply rules
             (
-                dok, dok_nn, dok_nb, dok_nw, 
+                dok, dok_nn, dok_nb, dok_nw,
                 dok_bn, dok_bw, dok_wn, dok_wb
             ) = logical_rules(
                 ids1, ids2, states1, states2, s1, s2,
@@ -567,7 +566,7 @@ def logical_infer_update(
     dok_nb = detail.get("nb", {})
     dok_nw = detail.get("nw", {})
     dok_bn = detail.get("bn", {})
-    dok_bw = detail.get("bw", {}) 
+    dok_bw = detail.get("bw", {})
     dok_wn = detail.get("wn", {})
     dok_wb = detail.get("wb", {})
 
@@ -582,10 +581,10 @@ def logical_infer_update(
                 dok, dok_nn, dok_nb, dok_nw,
                 dok_bn, dok_bw, dok_wn, dok_wb
             ) = logical_infer(
-                ids1, ids2, states1, states2, 
+                ids1, ids2, states1, states2,
                 dok=dok, dok_nn=dok_nn, dok_nb=dok_nb, dok_nw=dok_nw,
                 dok_bn=dok_bn, dok_bw=dok_bw, dok_wn=dok_wn, dok_wb=dok_wb)
-    
+
     # copy details
     detail["nn"] = dok_nn
     detail["nb"] = dok_nb

@@ -1,5 +1,6 @@
 import bwsample as bws
 
+
 def test1():
     a = {"key": 2, "misc": 3, ("id1", "id2"): 7}
     b = {"misc": 1}
