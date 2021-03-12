@@ -248,12 +248,12 @@ def find_by_state(ids, states, s_):
 
 
 def logical_rules(
-        ids1, 
-        ids2, 
-        states1, 
-        states2, 
-        s1, 
-        s2, 
+        ids1: List[ItemID], 
+        ids2: List[ItemID], 
+        states1: List[ItemState], 
+        states2: List[ItemState], 
+        s1: ItemState, 
+        s2: ItemState, 
         dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
         dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
         dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
@@ -266,7 +266,52 @@ def logical_rules(
 
     Parameters:
     -----------
+    ids1, ids2: List[ItemID] or List[str]
+        List of IDs
+    
+    states1, states2: List[ItemState] or List[int]
+        Combinatorial states, i.e. a list of item states. Each item state is
+          encoded as
+          - 0: NOT
+          - 1: BEST
+          - 2: WORST
 
+    s1, s2 : ItemState or int
+        The item state of the overlapping item
+
+    Returns:
+    --------
+    dok : Dict[Tuple[ItemID, ItemID], int]
+        Aggregate counts
+    
+    dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
+        : Dict[Tuple[ItemID, ItemID], int]
+        The different variants of logically inferred pairs
+          counted seperatly
+
+    Example 1:
+    ----------
+        # find the overlapping item
+        uid = list(set(ids1).intersection(ids2))[0]
+        # lookup the item states
+        try:
+            p1, p2 = ids1.index(uid), ids2.index(uid)
+            s1, s2 = states1[p1], states2[p2]
+        ...
+
+    Example 2:
+    ----------
+        import bwsample as bws
+        states1, ids1 = (1, 0, 2), ('D', 'E', 'F')
+        states2, ids2 = (1, 0, 2), ('X', 'Y', 'D')
+        dok, nn, nb, nw, bn, bw, wn, wb = bws.counting.logical_infer(
+            ids1, ids2, states1, states2)
+    
+    Literature:
+    -----------
+    Hamster, U. A. (2021, March 9). Extracting Pairwise Comparisons Data
+      from Best-Worst Scaling Surveys by Logical Inference. 
+      https://doi.org/10.31219/osf.io/qkxej
     """
     if dok is None:
         dok = {}
