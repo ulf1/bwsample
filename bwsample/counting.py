@@ -42,29 +42,6 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
     return agg_dok, direct_dok, direct_detail, logical_dok, logical_detail
 
 
-def logical_infer_update(evaluations,
-                         database: Dict[Tuple[ItemID, ItemID], int] = None,   # db_infer
-                         dok : Dict[Tuple[ItemID, ItemID], int] = None,   # dok_infer
-                         detail=None
-                        ):
-    """
-    """
-    # Create DoK
-    if dok_infer is None:
-        dok_infer = {}
-    # Create new database
-    if db_infer is None:
-        db_infer = list(evaluations)
-
-    # start searching for logical inferences
-    for states1, ids1 in evaluations:
-        for states2, ids2 in db_infer:
-            dok_infer = logical_infer(
-                ids1, ids2, states1, states2, dok=dok_infer)
-    # done
-    return dok_infer
-
-
 def direct_extract(
         stateids: List[ItemID],
         combostates: List[ItemState],
@@ -244,7 +221,7 @@ def direct_extract_batch(
     if dok is None:
         dok = {}
     if detail is None:
-        detail, dok_bw, dok_bn, dok_nw = {}, {}, {}, {}
+        detail = {}
 
     # query `detail` object
     dok_bw = detail.get("bw", {})
@@ -270,9 +247,43 @@ def find_by_state(ids, states, s_):
     return [i for i, s in zip(*(ids, states)) if s in s_]
 
 
-def logical_rules(ids1, ids2, states1, states2, s1, s2, dok=None):
+def logical_rules(
+        ids1, 
+        ids2, 
+        states1, 
+        states2, 
+        s1, 
+        s2, 
+        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_wn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_wb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None):
+    """Logical Inference rules
+
+    Parameters:
+    -----------
+
+    """
     if dok is None:
         dok = {}
+    if dok_nn is None:
+        dok_nn = {}
+    if dok_nb is None:
+        dok_nb = {}
+    if dok_nw is None:
+        dok_nw = {}
+    if dok_bn is None:
+        dok_bn = {}
+    if dok_bw is None:
+        dok_bw = {}
+    if dok_wn is None:
+        dok_wn = {}
+    if dok_wb is None:
+        dok_wb = {}
 
     if s1 == 0:  # 0:NOT
         if s2 == 0:  # 0:NOT
@@ -280,22 +291,26 @@ def logical_rules(ids1, ids2, states1, states2, s1, s2, dok=None):
             for i in find_by_state(ids1, states1, [1]):
                 for j in find_by_state(ids2, states2, [2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_nn[(i, j)] = 1 + dok_nn.get((i, j), 0)
             # nn: X>F
             for i in find_by_state(ids2, states2, [1]):
                 for j in find_by_state(ids1, states1, [2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_nn[(i, j)] = 1 + dok_nn.get((i, j), 0)
 
         elif s2 == 1:  # 1:BEST
             # nb: D>Y, D>Z
             for i in find_by_state(ids1, states1, [1]):
                 for j in find_by_state(ids2, states2, [0, 2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_nb[(i, j)] = 1 + dok_nb.get((i, j), 0)
 
         elif s2 == 2:  # 2:WORST
             # nw: X>F, Y>F
             for j in find_by_state(ids1, states1, [2]):
                 for i in find_by_state(ids2, states2, [0, 1]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_nw[(i, j)] = 1 + dok_nw.get((i, j), 0)
 
     elif s1 == 1:  # 1:BEST
         if s2 == 0:
@@ -303,12 +318,14 @@ def logical_rules(ids1, ids2, states1, states2, s1, s2, dok=None):
             for i in find_by_state(ids2, states2, [1]):
                 for j in find_by_state(ids1, states1, [0, 2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_bn[(i, j)] = 1 + dok_bn.get((i, j), 0)
 
         elif s2 == 2:
             # bw: X>E, X>F, Y>E, Y>F
             for j in find_by_state(ids1, states1, [0, 2]):
                 for i in find_by_state(ids2, states2, [0, 1]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_bw[(i, j)] = 1 + dok_bw.get((i, j), 0)
 
     elif s1 == 2:  # 2:WORST
         if s2 == 0:
@@ -316,19 +333,50 @@ def logical_rules(ids1, ids2, states1, states2, s1, s2, dok=None):
             for i in find_by_state(ids1, states1, [0, 1]):
                 for j in find_by_state(ids2, states2, [2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_wn[(i, j)] = 1 + dok_wn.get((i, j), 0)
 
         elif s2 == 1:
             # wb: D>Y, D>Z, E>Y, E>Z
             for i in find_by_state(ids1, states1, [0, 1]):
                 for j in find_by_state(ids2, states2, [0, 2]):
                     dok[(i, j)] = 1 + dok.get((i, j), 0)
+                    dok_wb[(i, j)] = 1 + dok_wb.get((i, j), 0)
     # done
-    return dok
+    return dok, dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
 
 
-def logical_infer(ids1, ids2, states1, states2, dok=None):
+def logical_infer(
+        ids1, 
+        ids2, 
+        states1, 
+        states2, 
+        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_nn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_nb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_nw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_bn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_bw: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_wn: Optional[Dict[Tuple[ItemID, ItemID], int]] = None, 
+        dok_wb: Optional[Dict[Tuple[ItemID, ItemID], int]] = None):
+    """
+    """
     if dok is None:
         dok = {}
+    if dok_nn is None:
+        dok_nn = {}
+    if dok_nb is None:
+        dok_nb = {}
+    if dok_nw is None:
+        dok_nw = {}
+    if dok_bn is None:
+        dok_bn = {}
+    if dok_bw is None:
+        dok_bw = {}
+    if dok_wn is None:
+        dok_wn = {}
+    if dok_wb is None:
+        dok_wb = {}
+
     # find common IDs, and loop over them
     for uid in set(ids1).intersection(ids2):
         try:
@@ -337,8 +385,53 @@ def logical_infer(ids1, ids2, states1, states2, dok=None):
             # lookup states of the ID
             s1, s2 = states1[p1], states2[p2]
             # apply rules
-            dok = logical_rules(ids1, ids2, states1, states2, s1, s2, dok=dok)
+            (
+                dok, dok_nn, dok_nb, dok_nw, 
+                dok_bn, dok_bw, dok_wn, dok_wb
+            ) = logical_rules(
+                ids1, ids2, states1, states2, s1, s2,
+                dok=dok, dok_nn=dok_nn, dok_nb=dok_nb, dok_nw=dok_nw,
+                dok_bn=dok_bn, dok_bw=dok_bw, dok_wn=dok_wn, dok_wb=dok_wb)
         except ValueError as err:
             print(err)
             continue
+
+    # done
+    return dok, dok_nn, dok_nb, dok_nw, dok_bn, dok_bw, dok_wn, dok_wb
+
+
+def logical_infer_update(
+        evaluations: List[Tuple[List[ItemState], List[ItemID]]],
+        database: List[Tuple[List[ItemState], List[ItemID]]] = None,   # db_infer
+        dok: Optional[Dict[Tuple[ItemID, ItemID], int]] = None,
+        detail: Optional[dict] = None) -> (
+            Dict[Tuple[ItemID, ItemID], int], dict):
+    """
+    """
+    # Create DoKs
+    if dok is None:
+        dok = {}
+    if detail is None:
+        detail = {}
+
+    # query `detail` object
+    dok_nn = detail.get("nn", {})
+    dok_nb = detail.get("nb", {})
+    dok_nw = detail.get("nw", {})
+    dok_bn = detail.get("bn", {})
+    dok_bw = detail.get("bw", {}) 
+    dok_wn = detail.get("wn", {})
+    dok_wb = detail.get("wb", {})
+
+    # Create new database
+    if database is None:
+        database = list(evaluations)
+
+    # start searching for logical inferences
+    for states1, ids1 in evaluations:
+        for states2, ids2 in database:
+            dok = logical_infer(
+                ids1, ids2, states1, states2, dok=dok)
+    # done
     return dok
+
