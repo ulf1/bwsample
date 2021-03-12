@@ -64,11 +64,11 @@ def count(evaluations: List[Tuple[List[ItemState], List[ItemID]]],
     """
     # extract from each BWS set
     direct_dok, direct_detail = direct_extract_batch(
-        evaluations, dok=direct_dok, details=direct_detail)
+        evaluations, dok=direct_dok, detail=direct_detail)
 
     # search for logical inferences
     if use_logical:
-        logical_dok = logical_infer_update(
+        logical_dok, logical_detail = logical_infer_update(
             evaluations, database=logical_database,
             dok=logical_dok, detail=logical_detail)
 
@@ -573,7 +573,7 @@ def logical_infer_update(
 
     # Create new database
     if database is None:
-        database = evaluations.copy()
+        database = list(evaluations)
 
     # start searching for logical inferences
     for states1, ids1 in evaluations:

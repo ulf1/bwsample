@@ -83,26 +83,49 @@ agg_dok, direct_dok, direct_detail, logical_dok, logical_detail = bws.count(eval
 
 
 **Output Data:**
-The function `bwsample.count` outputs Dictionary of Keys (DOK) with the data strcuture `Dict[Tuple[ItemID, ItemID], int]`, e.g. `agg_dok`, `direct_dok`, `direct_detail["bw"]`, etc., what contain variants which pairs where counted:
+The function `bwsample.count` outputs Dictionary of Keys (DOK) with the data structure `Dict[Tuple[ItemID, ItemID], int]`, e.g. `agg_dok`, `direct_dok`, `direct_detail["bw"]`, etc., what contain variants which pairs where counted:
 
 - `agg_dok`
     - `direct_dok`
-        - `direct_detail["bw"]`
-        - `direct_detail["bn"]`
-        - `direct_detail["nw"]`
+        - `direct_detail["bw"]` -- `BEST>WORST`
+        - `direct_detail["bn"]` -- `BEST>NOT`
+        - `direct_detail["nw"]` -- `NOT>WORST`
     - `logical_dok`
-        - `logical_detail["nn"]`
-        - `logical_detail["nb"]`
-        - `logical_detail["nw"]`
-        - `logical_detail["bn"]`
-        - `logical_detail["bw"]`
-        - `logical_detail["wn"]`
-        - `logical_detail["wb"]`
+        - `logical_detail["nn"]` -- `D>E>F vs X>E>Z`
+        - `logical_detail["nb"]` -- `D>E>F vs E>Y>Z`
+        - `logical_detail["nw"]` -- `D>E>F vs X>Y>E`
+        - `logical_detail["bn"]` -- `D>E>F vs X>D>Z`
+        - `logical_detail["bw"]` -- `D>E>F vs X>Y>D`
+        - `logical_detail["wn"]` -- `D>E>F vs X>F>Z`
+        - `logical_detail["wb"]` -- `D>E>F vs F>Y>Z`
 
 
+**Limit the Database Size:**
+Logical Inference has quadratic complexity, and it might be beneficial to limit the database what can be done by the `logical_database` parameter.
+
+```python
+import bwsample as bws
+agg_dok, direct_dok, direct_detail, logical_dok, logical_detail = bws.count(
+    evaluations, logical_database=evaluations[:1])
+```
 
 **Update Frequencies:**
-The function `bwsample.count` is an update function, i.e. you can provide previous count or resp. frequency data (e.g. `logical_dok`, `logical_database`) or start from scratch (e.g. `agg_dok=None`).
+The function `bwsample.count` is an update function, i.e. you can provide previous count or resp. frequency data (e.g. `logical_dok`) or start from scratch (e.g. `agg_dok=None`).
+
+```python
+import bwsample as bws
+
+evaluations = [...]
+direct_dok = {...}
+direct_detail = {...}
+logical_dok = {...}
+logical_detail = {...}
+database = [...]
+
+agg_dok, direct_dok, direct_detail, logical_dok, logical_detail = bws.count(
+    evaluations, direct_dok=direct_dok, direct_detail=direct_detail,
+    logical_dok=logical_dok, logical_detail=logical_detail, logical_database=database)
+```
 
 
 ### Ranking
