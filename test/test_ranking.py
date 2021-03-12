@@ -10,7 +10,7 @@ def test1():
         ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
         ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
     )
-    dok, _, _, _ = bws.extract_pairs_batch2(data)
+    dok, _ = bws.counting.direct_extract_batch(data)
 
     # possible settings
     settings = [
