@@ -4,6 +4,12 @@
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
 Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, count in dictionary of keys sparse matrix, and compute scores based on it.
 
+The package `bwsample` addresses three areas:
+
+* [Sampling](#sampling)
+* [Counting](#counting)
+* [Ranking](#ranking)
+
 ## Installation
 The `bwsample` [git repo](http://github.com/ulf1/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
@@ -11,15 +17,7 @@ The `bwsample` [git repo](http://github.com/ulf1/bwsample) is available as [PyPi
 pip install bwsample>=0.6.0
 ```
 
-## Usage
-The package `bwsample` addresses three areas:
-
-* [Sampling](#sampling)
-* [Counting](#counting)
-* [Ranking](#ranking)
-
-
-### Sampling
+## Sampling
 **Input Data:**
 The input data `examples` for `bwsample.sample` should be a `List[anything]`.
 For example, `List[Dict[ID,DATA]]` with identifiers using the key `"id"` and the associated data using the key `"data"`, e.g.
@@ -60,7 +58,7 @@ The output has the following structure
 **Warning**: `len(examples)` must be a multiple of `(n_items - 1)`
 
 
-### Counting
+## Counting
 **Input Data:**
 The input data`evaluations` for `bwsample.count` should structured as `List[Tuple[List[ItemState], List[ItemID]]]`. 
 The labelling/annotation application should produce a list of item states `List[ItemState]` with the states `BEST:1`, `WORST:2` and `NOT:0` for each item. 
@@ -128,7 +126,7 @@ agg_dok, direct_dok, direct_detail, logical_dok, logical_detail = bws.count(
 ```
 
 
-### Ranking
+## Ranking
 
 
 
