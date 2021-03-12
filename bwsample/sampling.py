@@ -58,7 +58,25 @@ def sample(examples: list, n_items: int, method: str = 'overlap',
     return reshaped
 
 
-def shuffle_subarrs(arrs, n_sets, n_items):
+def shuffle_subarrs(arrs, n_sets=None, n_items=None):
+    """Shuffle the sublists' items
+
+    Parameter:
+    ----------
+    arrs: List[List[int]] with the shape (n_sets, n_items)
+        A list of (sub)lists
+
+    Example:
+    --------
+        import bwsample as bws
+        arrs = [[1, 2, 3], [4, 5, 6]]
+        n_sets, n_items = 2, 3
+        out = bws.sampling.shuffle_subarrs(arrs, n_sets, n_items)
+    """
+    if n_sets is None:
+        n_sets = len(arrs)
+    if n_items is None:
+        n_items = len(arrs[0])
     rj = np.random.randint(1, n_items, n_sets)
     rk = np.random.randint(0, n_items - 1, n_sets)
     for i, (j, k) in enumerate(np.c_[rj, rk]):
