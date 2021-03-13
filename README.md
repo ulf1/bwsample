@@ -143,8 +143,20 @@ The function `bwsample.rank` computes a python index variable with a proposed or
 
 ```python
 import bwsample as bws
-ranked, ordids, scores, info = bws.ranking(dok, method='ratio')
+ranked, ordids, scores, info = bws.ranking(dok, method='ratio', adjust='quantile')
 ```
+
+**Available methods:**
+Computed from extracted pairs:
+
+- `'ratio'` -- Simple ratios for each pair, and sum ratios for each item.
+- `'pvalue'` -- Chi-Squared based p-value for each pair, and sum 1-pval for each item.
+- `'btl'` -- Bradley-Terry-Luce (BTL) model estimated with MM algorithm (Hunter, 2004).
+- `'eigen'` -- Eigenvectors of the reciprocal pairwise comparison matrix (Saaty, 2003).
+- `'trans'` -- Estimate transition probability of the next item to be better.
+
+The implementations `ratio`, `pvalue`, `'btl'`, `'eigen'`, and `'trans'` are fully based on sparse matrix operations and `scipy.sparse` algorithms, and avoid accidental conversions to dense matrices.
+
 
 **References:**
 
