@@ -125,17 +125,17 @@ def adjustscore(scores: np.array,
         return sklearn.preprocessing.quantile_transform(
             X=scores.reshape(-1, 1),
             n_quantiles=min(n_quantiles, len(scores)),
-            output_distribution='uniform')
+            output_distribution='uniform').reshape(-1)
 
     elif method == 'sig3iqr':
         adjusted = sklearn.preprocessing.robust_scale(
             X=scores, quantile_range=(25, 75))
-        return scipy.special.expit(3 * adjusted)
+        return scipy.special.expit(3 * adjusted).reshape(-1)
 
     elif method == 'platt':
         cls = sklearn.linear_model.LogisticRegression()
         cls.fit(X=scores.reshape(-1, 1), y=labels)
-        return cls.predict_proba(scores.reshape(-1, 1))[:, 1]
+        return cls.predict_proba(scores.reshape(-1, 1))[:, 1].reshape(-1)
 
     else:
         raise Exception(f"The method='{method}' is not implemented.")
