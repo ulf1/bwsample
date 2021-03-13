@@ -21,28 +21,29 @@ bibliography: paper.bib
 
 
 # Summary
-`bwsample` is a Python package that provides algorithms to sample best-worst scaling sets (BWS sets), extract and count pairwise comparisons from user-evaluated BWS sets, and compute ranks and scores.
+`bwsample` is a Python package that provides algorithms to sample best-worst scaling sets (BWS sets), extract and count pairwise comparisons from user-evaluated BWS sets, and compute rankings and scores.
 
 # Statement of need
 We are using the `bwsample` package as part of an *Active Learning* experiment in which linguistics experts and lay people (crowdsourcing) are judging sentences examples with the *Best-Worst Scaling* (BWS) method (Fig. \ref{fig:active-learning-process}).
 BWS is *"... the cognitive process by which respondents repeatedly choose the two objects in varying sets of three or more objects that they feel exhibit the largest perceptual difference on an underlying continuum of interest"* [@finn1992, pp.13].
-In our context, BWS is primarily used as a means of data collection.
+In our context, BWS is primarily used as a means of data collection as it is a more economically efficient way to collect data than pairwise comparison UIs [@hamster223a].
 
 ![Using `bwsample` (`bws`) in an Active Learning experiment.\label{fig:active-learning-process}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-process.png)
 
 
 ### Software Feature
-The *sampling* algorithms ensure overlapping BWS sets, and are deployed in the REST API for an Web App. Overlaps are required for counting pairs by logical inference (SEE TR-223a REPORT!). A possible question is how many items has to be shown twice a) initially, and b) after the pairs frequency database grew over time to gather reasonable amounts counting or resp. frequency data?
+The *sampling* algorithms ensure overlapping BWS sets, and are deployed in the REST API for a Web App. Overlaps are required for counting pairs by logical inference [@hamster223a]. 
+A possible question is how many items has to be shown twice a) initially, and b) after the pairs frequency database grew over time to gather reasonable amounts counting or resp. frequency data?
 
-The implemented *counting* algorithms can distinct between 3 types of directly extract pairs, and 7 logical inferred pairs. This opens the opportunity for further analysis, e.g. detect inconsistent evaluations. It also allows comparing results with previous studies [@kiritchenko2016, @kiritchenko2017] that used a subset of extractable pairs, e.g. only pairs with explicitly selected best and worst items [@orme2009].
+The implemented *counting* algorithms can distinguish between 3 types of directly extract pairs and 7 types of logically inferred pairs. This opens the opportunity for further analysis, e.g. to detect inconsistent evaluations [@hamster223a], or to assign weights to different types of pairs.
 
-The implemented algorithms to compute rankings and scores from pairwise comparisons are described in (TR-223b).  
-Compare the pairwise frequency matrix with its transposed matrix, e.g. a) by differences [@orme2009], b) by percentage ratio, c) by p-value based metric of Chi-Squared test, and use the row sums to rank and score.
-d) Compute eigenvectors as scores [@saaty2003].
-e) Estimate and simulate a transition matrix.
-f) MLE estimation of the Bradley-Terry-Luce (BTL) probability model [@hunter2004, pp.~386-387].
-
-
+In order to compute *rank* items from pairwise comparison data, five algorithms are available: 
+a) Eigenvector estimation of the reciprocal pairwise comparison matrix as scores [@saaty2003],
+b) MLE estimation of the Bradley-Terry-Luce (BTL) probability model [@hunter2004, pp.~386-387],
+c) Simple ratios for each pair and sum the ratios for each item,
+d) Chi-Squared based p-value for each pair and sum 1 minus p-values for each item,
+e) Estimation of the transition probability that the next element is better.
+All ranking algorithms are implemented based on sparse matrix operations.
 
 # Acknowledgements
 This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - [433249742](https://gepris.dfg.de/gepris/projekt/433249742).
