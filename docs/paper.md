@@ -1,5 +1,5 @@
 ---
-title: "`bwsample`: Processing of Best-Worst Scaling sets"
+title: "`bwsample`: Processing Best-Worst Scaling data"
 tags:
   - Sampling
   - Best-Worst Scaling
