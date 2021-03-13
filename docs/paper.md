@@ -7,7 +7,7 @@ tags:
   - Dictionary of Keys
   - Open-source
 authors:
-  - name: Ulf Hamster
+  - name: Ulf A. Hamster
     orcid: 0000-0002-0440-4868
     affiliation: "1"
 affiliations:
@@ -25,7 +25,7 @@ bibliography: paper.bib
 
 # Statement of need
 We are using the `bwsample` package as part of an *Active Learning* experiment in which linguistics experts and lay people (crowdsourcing) are judging sentences examples with the *Best-Worst Scaling* (BWS) method (Fig. \ref{fig:active-learning-process}).
-BWS is *"... the cognitive process by which respondents repeatedly choose the two objects in varying sets of three or more objects that they feel exhibit the largest perceptual difference on an underlying continuum of interest"* [@finn1992, pp.13].
+BWS is *"... the cognitive process by which respondents repeatedly choose the two objects in varying sets of three or more objects that they feel exhibit the largest perceptual difference on an underlying continuum of interest"* [@finn1992, p.13].
 In our context, BWS is primarily used as a means of data collection what is economically efficient than using pairwise comparison user interfaces [@hamster223a].
 
 ![Using `bwsample` (`bws`) in an Active Learning experiment.\label{fig:active-learning-process}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-process.png)
@@ -36,7 +36,7 @@ A possible question is how many items has to be shown twice a) initially, and b)
 The implemented *counting* algorithms can distinguish between 3 types of directly extract pairs and 7 types of logically inferred pairs. This opens the opportunity for further analysis, e.g. to detect inconsistent evaluations [@hamster223a], or to assign weights to different types of pairs.
 In order to compute *rank* items from pairwise comparison data, five algorithms are available: 
 a) Eigenvector estimation of the reciprocal pairwise comparison matrix as scores [@saaty2003],
-b) MLE estimation of the Bradley-Terry-Luce probability model [@hunter2004, pp.~386-387],
+b) MLE estimation of the Bradley-Terry-Luce probability model [@hunter2004, pp. 386-387],
 c) Simple ratios for each pair and sum the ratios for each item,
 d) Chi-Squared based p-value for each pair and sum 1 minus p-values for each item,
 e) Estimation of the transition probability that the next element is better.
