@@ -1,3 +1,7 @@
+# 0.6.1 / 2021-03-14
+
+  * repo moved to the organization `github.com/satzbeleg`
+
 # 0.5.5 / 2021-02-23
 
   * Default settings changed for `transition_simulation`
