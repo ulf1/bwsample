@@ -203,3 +203,13 @@ Please [open an issue](https://github.com/ulf1/bwsample/issues/new) for support.
 
 ### Contributing
 Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add commits, and [open a pull request](https://github.com/ulf1/bwsample/compare/).
+
+
+### Acknowledgements
+This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - [433249742](https://gepris.dfg.de/gepris/projekt/433249742). Project duration: 2020-2023.
+
+### Citation
+There are two ways to cite this software for academic purposes:
+
+1. Cite the peer-reviewed JOSS paper (submission pending)
+2. Cite Zenodo software publication. The DOIs are linked to a specific versions of the software . Please check the latest version here: [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
