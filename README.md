@@ -11,7 +11,7 @@ The package `bwsample` addresses three areas:
 * [Ranking](#ranking)
 
 ## Installation
-The `bwsample` [git repo](http://github.com/ulf1/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
+The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
 ```
 pip install bwsample>=0.6.0
@@ -198,11 +198,11 @@ rm -r .venv
 
 
 ### Support
-Please [open an issue](https://github.com/ulf1/bwsample/issues/new) for support.
+Please [open an issue](https://github.com/satzbeleg/bwsample/issues/new) for support.
 
 
 ### Contributing
-Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add commits, and [open a pull request](https://github.com/ulf1/bwsample/compare/).
+Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add commits, and [open a pull request](https://github.com/satzbeleg/bwsample/compare/).
 
 
 ### Acknowledgements
