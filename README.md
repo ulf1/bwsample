@@ -143,7 +143,7 @@ The function `bwsample.rank` computes a python index variable with a proposed or
 
 ```python
 import bwsample as bws
-ranked, ordids, scores, info = bws.ranking(dok, method='ratio', adjust='quantile')
+ranked, ordids, scores, info = bws.rank(dok, method='ratio', adjust='quantile')
 ```
 
 **Available methods:**
