@@ -6,6 +6,7 @@ import scipy.sparse
 import scipy.sparse.linalg
 import scipy.linalg
 import scipy.stats
+import warnings
 
 
 def rank(dok: Dict[Tuple[str, str], int],
@@ -67,6 +68,7 @@ def rank(dok: Dict[Tuple[str, str], int],
         positions, sortedids, metrics, info = maximize_ratio(
             cnt, indices, **kwargs)
     elif method in ('pvalue'):
+        warnings.warn("Use 'approx' because it's faster.", UserWarning)
         positions, sortedids, metrics, info = maximize_minuspvalue(
             cnt, indices, **kwargs)
     elif method in ('approx', 'hoaglin'):
@@ -316,7 +318,7 @@ def maximize_hoaglinapprox(cnt: scipy.sparse.csr_matrix,
     # compute Hoaglin's Approximation for DoF=0
     P = np.sqrt(X2)
     P.data = np.power(0.1, (P.data + 1.37266) / 2.13161)
-    P.data = P.data * 4.405087805849058
+    # P.data = P.data * 4.405087805849058
     P.data = np.maximum(0.0, np.minimum(1.0, P.data))
     # only if Nij>Nji
     P = P.multiply(cnt > cnt.T)
