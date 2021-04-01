@@ -150,7 +150,7 @@ ranked, ordids, scores, info = bws.ranking(dok, method='ratio', adjust='quantile
 Computed from extracted pairs:
 
 - `'ratio'` -- Simple ratios for each pair, and sum ratios for each item.
-- `'pvalue'` -- Chi-Squared based p-value for each pair, and sum 1-pval for each item.
+- `'approx'` -- Chi-Squared based p-value (Hoaglin Approximation) for each pair, and sum 1-pval for each item (Beh et al, 2018)
 - `'btl'` -- Bradley-Terry-Luce (BTL) model estimated with MM algorithm (Hunter, 2004).
 - `'eigen'` -- Eigenvectors of the reciprocal pairwise comparison matrix (Saaty, 2003).
 - `'trans'` -- Estimate transition probability of the next item to be better.
@@ -159,7 +159,7 @@ The implementations `ratio`, `pvalue`, `'btl'`, `'eigen'`, and `'trans'` are ful
 
 
 **References:**
-
+- Hoaglin Approximation for p-values: Beh, E., 2018. Exploring How to Simply Approximate the P-value of a Chi-squared Statistic. AJS 47, 63–75. [https://doi.org/10.17713/ajs.v47i3.757](https://doi.org/10.17713/ajs.v47i3.757)
 - Eigenvector solution in: Saaty, T. L. (2003). Decision-making with the AHP: Why is the principal eigenvector nec- essary. European Journal of Operational Research, 145(1), 85–91. [https://doi.org/10.1016/S0377-2217(02)00227-8](https://doi.org/10.1016/S0377-2217(02)00227-8)
 - Estimating the BTL model in: Hunter, D. R. (2004). MM algorithms for generalized Bradley-Terry models. The Annals of Statistics, 32(1), 384–406. [https://doi.org/10.1214/aos/1079120141](https://doi.org/10.1214/aos/1079120141)
 - MaxDiff score in: Orme, B. (2009). MaxDiff Analysis: Simple Counting, Individual-Level Logit, and HB. [https://sawtoothsoftware.com/uploads/sawtoothsoftware/originals/f89a6537-1cae-4fb5-afad-9d325c2a3143.pdf](https://sawtoothsoftware.com/uploads/sawtoothsoftware/originals/f89a6537-1cae-4fb5-afad-9d325c2a3143.pdf)
