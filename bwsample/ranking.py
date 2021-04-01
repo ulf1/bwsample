@@ -23,6 +23,7 @@ def rank(dok: Dict[Tuple[str, str], int],
         The procedure to compute ranks and scores.
         - 'ratio'
         - 'pvalue'
+        - 'approx'
         - 'btl'
         - 'eigen'
         - 'trans'
@@ -67,6 +68,9 @@ def rank(dok: Dict[Tuple[str, str], int],
             cnt, indices, **kwargs)
     elif method in ('pvalue'):
         positions, sortedids, metrics, info = maximize_minuspvalue(
+            cnt, indices, **kwargs)
+    elif method in ('approx', 'hoaglin'):
+        positions, sortedids, metrics, info = maximize_hoaglinapprox(
             cnt, indices, **kwargs)
     elif method in ('btl', 'hunter'):
         positions, sortedids, metrics, info = bradley_terry_probability(
@@ -229,6 +233,91 @@ def maximize_minuspvalue(cnt: scipy.sparse.csr_matrix,
                         P[i, j] = 1 - pval
                     else:
                         P[j, i] = 1 - pval
+
+    # sum rows in DoK matrix
+    metrics = np.array(P.sum(axis=1).flatten())[0]
+    # averaging
+    if avg == 'all':
+        metrics /= len(metrics)
+    elif avg == 'exist':
+        ridx, _ = (P + P.T).nonzero()  # ensure actual 0s are counted
+        for i, c in zip(*np.unique(ridx, return_counts=True)):
+            metrics[i] /= c
+
+    # sort, larger row sums are better
+    positions = np.argsort(-metrics)  # minimize P, maximize 1-P
+    sortedids = np.array(indices)[positions]
+    metrics = metrics[positions]
+
+    # informations
+    info = {}
+    info["P"] = P
+
+    # done
+    return positions, sortedids, metrics, info
+
+
+def maximize_hoaglinapprox(cnt: scipy.sparse.csr_matrix,
+                           indices: List[str],
+                           avg: Optional[str] = 'exist'):
+    """Rank based on p-values computed with the Hoaglin Approximation of DoF=0
+
+    Parameters:
+    -----------
+    cnt : scipy.sparse.dok.dok_matrix
+        Quadratic sparse matrix with frequency data
+
+    indices : List[str]
+        Identifiers, e.g. UUID4, of each row/column of the `cnt` matrix.
+
+    avg : Optional[str]
+        How to compute denominator for averaging.
+        - 'all': divide the sum of ratios by the row length
+        - 'exist': divide the sum of ratios by the number of ratios in the row
+
+    Returns:
+    --------
+    positions : np.array[uint64]
+        The array positions to order/sort the original data by indexing.
+
+    sortedids : np.array[any]
+        The reordered item IDs
+
+    metrics : np.array[float]
+        The metric for each item ID. Also sorted in descending order.
+
+    info : dict
+        Further information depending on the selected `method`, e.g.
+        - "P": The matrix with the `1-p`-values
+
+    Example:
+    --------
+        import bwsample as bws
+        evaluations = (
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([1, 0, 0, 2], ['A', 'B', 'C', 'D']),
+            ([2, 0, 0, 1], ['A', 'B', 'C', 'D']),
+            ([0, 1, 2, 0], ['A', 'B', 'C', 'D']),
+            ([0, 1, 0, 2], ['A', 'B', 'C', 'D']),
+        )
+        agg_dok, _, _, _, _ = bws.count(evaluations)
+        positions, sortedids, metrics, info = bws.rank(
+            agg_dok, method='approx', avg='exist')
+    """
+    # compute Expected E
+    cnt = cnt.tocsr()
+    E = cnt + cnt.T
+    E.data = E.data / 2.0
+    # compute X^2
+    X2 = cnt - E
+    X2.data = (X2.data)**2
+    E.data = 1.0 / E.data
+    X2 = X2.multiply(E)
+    # compute Hoaglin's Approximation for DoF=0
+    P = np.sqrt(X2)
+    P.data = np.power(0.1, (P.data + 1.37266) / 2.13161)
+    # P.data = P.data * 4.405087805849058
+    P.data = np.maximum(0.0, np.minimum(1.0, P.data))
 
     # sum rows in DoK matrix
     metrics = np.array(P.sum(axis=1).flatten())[0]

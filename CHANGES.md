@@ -1,3 +1,7 @@
+# 0.6.3 / 2021-04-01
+
+  * Hoaglin's Approximation for p-value based metric
+
 # 0.6.1 / 2021-03-14
 
   * repo moved to the organization `github.com/satzbeleg`
