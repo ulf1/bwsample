@@ -14,7 +14,7 @@ The package `bwsample` addresses three areas:
 The `bwsample` [git repo](http://github.com/ulf1/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
 ```
-pip install bwsample>=0.6.0
+pip install bwsample>=0.6.3
 ```
 
 ## Sampling
