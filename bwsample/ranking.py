@@ -6,6 +6,7 @@ import scipy.sparse
 import scipy.sparse.linalg
 import scipy.linalg
 import scipy.stats
+import warnings
 
 
 def rank(dok: Dict[Tuple[str, str], int],
@@ -67,6 +68,7 @@ def rank(dok: Dict[Tuple[str, str], int],
         positions, sortedids, metrics, info = maximize_ratio(
             cnt, indices, **kwargs)
     elif method in ('pvalue'):
+        warnings.warn("Use 'approx' because it's faster.", UserWarning)
         positions, sortedids, metrics, info = maximize_minuspvalue(
             cnt, indices, **kwargs)
     elif method in ('approx', 'hoaglin'):
