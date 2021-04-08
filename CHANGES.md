@@ -1,3 +1,7 @@
+# 0.6.4 / 2021-04-08
+
+  * PyPi RST format description
+
 # 0.6.3 / 2021-04-01
 
   * Hoaglin's Approximation for p-value based metric
