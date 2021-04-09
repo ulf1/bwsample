@@ -13,7 +13,7 @@ The package `bwsample` addresses three areas:
 ## Installation
 The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
-```
+```sh
 pip install bwsample>=0.6.3
 ```
 
@@ -169,7 +169,7 @@ The implementations `ratio`, `pvalue`, `'btl'`, `'eigen'`, and `'trans'` are ful
 ### Install a virtual environment
 In order to run the Jupyter notebooks or want to work on this project (e.g. unit tests, syntax checks) you should install a Python virtual environment.
 
-```
+```sh
 python3.6 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -189,7 +189,7 @@ pip install -r requirements-demo.txt --no-cache-dir
 
 ### Clean up 
 
-```
+```sh
 find . -type f -name "*.pyc" | xargs rm
 find . -type d -name "__pycache__" | xargs rm -r
 rm -r .pytest_cache
