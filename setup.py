@@ -1,5 +1,4 @@
 from setuptools import setup
-import pypandoc
 
 
 def get_version(path):
@@ -15,14 +14,13 @@ def get_version(path):
 setup(name='bwsample',
       version=get_version("bwsample/__init__.py"),
       description='Sampling algorithm for best-worst scaling sets.',
-      long_description=pypandoc.convert('README.md', 'rst'),
+      long_description='README.rst',
       url='http://github.com/ulf1/bwsample',
       author='Ulf Hamster',
       author_email='554c46@gmail.com',
       license='Apache License 2.0',
       packages=['bwsample'],
       install_requires=[
-          'setuptools>=40.0.0',
           'numpy>=1.19.5',
           'scipy>=1.5.4',
           'scikit-learn>=0.24.1'

@@ -1,3 +1,8 @@
+# 0.6.5 / 2020-04-23
+
+  * Test multiple python versions
+  * Installation problems: remove pandoc from setup.py
+
 # 0.6.4 / 2021-04-08
 
   * PyPi RST format description
