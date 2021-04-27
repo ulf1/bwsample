@@ -21,9 +21,9 @@ setup(name='bwsample',
       license='Apache License 2.0',
       packages=['bwsample'],
       install_requires=[
-          'numpy>=1.19.5',
-          'scipy>=1.5.4',
-          'scikit-learn>=0.24.1'
+          'numpy>=1.19.5,<2',
+          'scipy>=1.5.4,<2',
+          'scikit-learn>=0.24.1,<1'
       ],
       python_requires='>=3.6',
       zip_safe=True)
