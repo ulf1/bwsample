@@ -1,4 +1,11 @@
 from setuptools import setup
+import os
+
+
+def read(fname):
+    with open(os.path.join(os.path.dirname(__file__), fname)) as fp:
+        s = fp.read()
+    return s
 
 
 def get_version(path):
@@ -15,7 +22,7 @@ setup(
     name='bwsample',
     version=get_version("bwsample/__init__.py"),
     description='Sampling algorithm for best-worst scaling sets.',
-    long_description='README.rst',
+    long_description=read('README.rst'),
     url='http://github.com/ulf1/bwsample',
     author='Ulf Hamster',
     author_email='554c46@gmail.com',
