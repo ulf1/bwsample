@@ -1,5 +1,6 @@
 [![PyPI version](https://badge.fury.io/py/bwsample.svg)](https://badge.fury.io/py/bwsample)
 [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
+[![bwsample](https://snyk.io/advisor/python/bwsample/badge.svg)](https://snyk.io/advisor/python/bwsample)
 
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
 Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, count in dictionary of keys sparse matrix, and compute scores based on it.
@@ -14,7 +15,7 @@ The package `bwsample` addresses three areas:
 The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
 ```sh
-pip install bwsample>=0.6.3
+pip install bwsample>=0.6.5
 ```
 
 ## Sampling
@@ -185,7 +186,14 @@ pip install -r requirements-demo.txt --no-cache-dir
 * Jupyter for the examples: `jupyter lab`
 * Check syntax: `flake8 --ignore=F401 --exclude=$(grep -v '^#' .gitignore | xargs | sed -e 's/ /,/g')`
 * Run Unit Tests: `pytest`
-* Upload to PyPi with twine: `python setup.py sdist && twine upload -r pypi dist/*`
+
+Publish
+
+```sh
+pandoc README.md --from markdown --to rst -s -o README.rst
+python setup.py sdist 
+twine upload -r pypi dist/*
+```
 
 ### Clean up 
 
