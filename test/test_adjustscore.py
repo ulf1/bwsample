@@ -39,3 +39,15 @@ def test6():
     labels = [s > 0.5 for s in scores]
     adjusted = bws.adjustscore(scores, method='platt', labels=labels)
     assert np.argsort(adjusted).tolist() == np.argsort(adjusted).tolist()
+
+
+def test7():
+    scores = [random.random() for _ in range(1000)]
+    adjusted = bws.adjustscore(scores, method='minmax')
+    assert np.argsort(adjusted).tolist() == np.argsort(adjusted).tolist()
+
+
+def test8():
+    scores = [.1, .3, .5, .7]
+    adjusted = bws.adjustscore(scores, method='minmax')
+    assert np.argsort(adjusted).tolist() == np.argsort(adjusted).tolist()

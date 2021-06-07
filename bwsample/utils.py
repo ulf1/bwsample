@@ -84,6 +84,13 @@ def add_dok(a: Dict[Tuple[ItemID, ItemID], int],
     return out
 
 
+def minmax(arr: np.array) -> np.array:
+    data = np.array(arr)
+    xmin = data.min()
+    xmax = data.max()
+    return (data - xmin) / (xmax - xmin)
+
+
 def adjustscore(scores: np.array,
                 method: Optional[str] = 'quantile',
                 n_quantiles: Optional[int] = 10000,
@@ -100,6 +107,7 @@ def adjustscore(scores: np.array,
             - 'quantile' -- sklearn's quantile transform
             - 'sig3iqr' -- sigmoid 3x sklearn's robust scaler with (25%,75%)
             - 'platt' -- calibrate scores with the binary labels (Platt, 1999)
+            - 'minmax' -- Min-Max scaling
 
     n_quantiles: Optional[int] = 10000
         Parameter for `method='quantile'`
@@ -119,7 +127,8 @@ def adjustscore(scores: np.array,
         comparisons to regularized likelihood methods.
     """
     scores = np.array(scores)
-    labels = np.array(labels)
+    if labels:
+        labels = np.array(labels)
 
     if method == 'quantile':
         return sklearn.preprocessing.quantile_transform(
@@ -136,6 +145,9 @@ def adjustscore(scores: np.array,
         cls = sklearn.linear_model.LogisticRegression()
         cls.fit(X=scores.reshape(-1, 1), y=labels)
         return cls.predict_proba(scores.reshape(-1, 1))[:, 1].reshape(-1)
+
+    elif method == 'minmax':
+        return minmax(scores)
 
     else:
         raise Exception(f"The method='{method}' is not implemented.")

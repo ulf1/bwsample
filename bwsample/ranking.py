@@ -1,6 +1,7 @@
 from typing import List, Dict, Tuple, Optional
 from .utils import to_scipy
 from .utils import adjustscore
+from .utils import minmax
 import numpy as np
 import scipy.sparse
 import scipy.sparse.linalg
@@ -589,13 +590,6 @@ def mle_btl_sparse(cnt: scipy.sparse.csr_matrix,
 
     # last result
     return np.array(x1.flatten())[0], False
-
-
-def minmax(arr: np.array) -> np.array:
-    data = np.array(arr)
-    xmin = data.min()
-    xmax = data.max()
-    return (data - xmin) / (xmax - xmin)
 
 
 def bradley_terry_probability(cnt: scipy.sparse.csr_matrix,
