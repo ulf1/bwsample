@@ -110,3 +110,4 @@ profile/data*
 .theia
 .DS_Store
 tmp
+README.rst
