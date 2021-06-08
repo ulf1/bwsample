@@ -3,7 +3,6 @@
 [![bwsample](https://snyk.io/advisor/python/bwsample/badge.svg)](https://snyk.io/advisor/python/bwsample)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/context:python)
-[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6InNhdHpiZWxlZyIsInJlcG8xIjoiYndzYW1wbGUiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyOTQ1MiwiaWF0IjoxNjE5NTM1ODEyfQ.Vk73_cXxw-nf-ZmipCeFNm-zrgqy8Bkdt0oVd73ryhQ)](https://www.deepcode.ai/app/gh/satzbeleg/bwsample/_/dashboard?utm_content=gh%2Fsatzbeleg%2Fbwsample)
 
 
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
