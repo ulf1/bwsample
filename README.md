@@ -3,7 +3,7 @@
 [![bwsample](https://snyk.io/advisor/python/bwsample/badge.svg)](https://snyk.io/advisor/python/bwsample)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/context:python)
-[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6InNhdHpiZWxlZyIsInJlcG8xIjoiYndzYW1wbGUiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyOTQ1MiwiaWF0IjoxNjE5NTM1ODEyfQ.Vk73_cXxw-nf-ZmipCeFNm-zrgqy8Bkdt0oVd73ryhQ)](https://www.deepcode.ai/app/gh/satzbeleg/bwsample/_/dashboard?utm_content=gh%2Fsatzbeleg%2Fbwsample)
+[![Known Vulnerabilities](https://snyk.io/test/github/satzbeleg/bwsample/badge.svg)](https://snyk.io/test/github/satzbeleg/bwsample)
 
 
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
@@ -21,6 +21,12 @@ The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as 
 ```sh
 pip install bwsample>=0.6.5
 ```
+
+## Overview
+The `bwsample` can be deployed at different stages to prepare BWS example sets and post-process evaluated BWS sets.
+An *Active Learning* experiment using an Web App with BWS user interface to judge sentence examples is shown in the diagram below. The `bwsample` would be implemented in a (python based) REST API. The App requests new BWS example sets, and `bwsample.sample` generates these. After the App posts the evaluation results to the API, `bwsample.count` extract new pairwise data from evaluated BWS sets. The pairwise comparision matrix can be used by `bwsample.rank` to compute  scores for a new updated training set.
+
+![](https://raw.githubusercontent.com/satzbeleg/bwsample/main/docs/bwsample-process.png)
 
 ## Sampling
 **Input Data:**

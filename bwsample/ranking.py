@@ -80,7 +80,7 @@ def rank(dok: Dict[Tuple[str, str], int],
             cnt, indices, **kwargs)
     elif method in ('eigen', 'saaty'):
         positions, sortedids, metrics, info = eigenvector_estimation(
-            cnt, indices, **kwargs)
+            cnt, indices)
     elif method in ('trans'):
         positions, sortedids, metrics, info = transition_simulation(
             cnt, indices, **kwargs)
