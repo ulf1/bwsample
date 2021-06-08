@@ -22,6 +22,12 @@ The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as 
 pip install bwsample>=0.6.5
 ```
 
+## Overview
+The `bwsample` can be deployed at different stages to prepare BWS example sets and post-process evaluated BWS sets.
+An *Active Learning* experiment using an Web App with BWS user interface to judge sentence examples is shown in the diagram below. The `bwsample` would be implemented in a (python based) REST API. The App requests new BWS example sets, and `bwsample.sample` generates these. After the App posts the evaluation results to the API, `bwsample.count` extract new pairwise data from evaluated BWS sets. The pairwise comparision matrix can be used by `bwsample.rank` to compute  scores for a new updated training set.
+
+![](https://raw.githubusercontent.com/satzbeleg/bwsample/main/docs/bwsample-process.png)
+
 ## Sampling
 **Input Data:**
 The input data `examples` for `bwsample.sample` should be a `List[anything]`.
