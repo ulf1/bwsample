@@ -31,3 +31,5 @@ jobs:
     - name: Unit Test with pytest
       run: |
         pytest
+    - name: Snyk
+      uses: snyk/actions@0.3.0
