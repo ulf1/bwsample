@@ -19,7 +19,7 @@ The package `bwsample` addresses three areas:
 The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
 ```sh
-pip install bwsample>=0.6.5
+pip install bwsample>=0.6.7
 ```
 
 ## Overview

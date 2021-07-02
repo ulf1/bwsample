@@ -323,6 +323,8 @@ def maximize_hoaglinapprox(cnt: scipy.sparse.csr_matrix,
     P.data = np.maximum(0.0, np.minimum(1.0, P.data))
     # only if Nij>Nji
     P = P.multiply(cnt > cnt.T)
+    # Q = 1-P
+    P.data = 1. - P.data
 
     # sum rows in DoK matrix
     metrics = np.array(P.sum(axis=1).flatten())[0]
