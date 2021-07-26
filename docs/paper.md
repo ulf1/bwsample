@@ -30,11 +30,11 @@ In our context, BWS is primarily used as a means of data collection what is econ
 
 ![Using `bwsample` (`bws`) in an Active Learning experiment.\label{fig:active-learning-process}](https://raw.githubusercontent.com/ulf1/bwsample/master/docs/bwsample-process.png)
 
-### Software Feature
+### Software Features
 The *sampling* algorithms ensure overlapping BWS sets, and are deployed in the REST API for a Web App. Overlaps are required for counting pairs by logical inference [@hamster223a]. 
-A possible question is how many items has to be shown twice a) initially, and b) after the pairs frequency database grew over time to gather reasonable amounts counting or resp. frequency data?
+A possible question is how many items have to be shown twice a) initially, and b) after the pair frequency database grew over time to gather reasonable amounts of counting or resp. frequency data?
 The implemented *counting* algorithms can distinguish between 3 types of directly extract pairs and 7 types of logically inferred pairs. This opens the opportunity for further analysis, e.g. to detect inconsistent evaluations [@hamster223a], or to assign weights to different types of pairs.
-In order to compute *rank* items from pairwise comparison data, five algorithms are available: 
+To compute *rank* items from pairwise comparison data, five algorithms are available: 
 a) Eigenvector estimation of the reciprocal pairwise comparison matrix as scores [@saaty2003],
 b) MLE estimation of the Bradley-Terry-Luce probability model [@hunter2004, pp. 386-387],
 c) Simple ratios for each pair and sum the ratios for each item,

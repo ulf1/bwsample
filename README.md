@@ -174,6 +174,8 @@ The implementations `ratio`, `pvalue`, `'btl'`, `'eigen'`, and `'trans'` are ful
 - Eigenvector solution in: Saaty, T. L. (2003). Decision-making with the AHP: Why is the principal eigenvector nec- essary. European Journal of Operational Research, 145(1), 85–91. [https://doi.org/10.1016/S0377-2217(02)00227-8](https://doi.org/10.1016/S0377-2217(02)00227-8)
 - Estimating the BTL model in: Hunter, D. R. (2004). MM algorithms for generalized Bradley-Terry models. The Annals of Statistics, 32(1), 384–406. [https://doi.org/10.1214/aos/1079120141](https://doi.org/10.1214/aos/1079120141)
 - MaxDiff score in: Orme, B. (2009). MaxDiff Analysis: Simple Counting, Individual-Level Logit, and HB. [https://sawtoothsoftware.com/uploads/sawtoothsoftware/originals/f89a6537-1cae-4fb5-afad-9d325c2a3143.pdf](https://sawtoothsoftware.com/uploads/sawtoothsoftware/originals/f89a6537-1cae-4fb5-afad-9d325c2a3143.pdf)
+- Hamster, U. A. (2021, April 1). Pairwise comparison based ranking and scoring algorithms. [https://doi.org/10.31219/osf.io/ev7fw](https://doi.org/10.31219/osf.io/ev7fw)
+
 
 ## Appendix
 
