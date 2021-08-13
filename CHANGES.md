@@ -1,3 +1,7 @@
+# 0.6.8 / 2020-08-13
+
+  * Bump version up for JOSS
+
 # 0.6.5 / 2020-04-23
 
   * Test multiple python versions
