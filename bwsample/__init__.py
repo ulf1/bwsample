@@ -1,4 +1,4 @@
-__version__ = '0.6.7'
+__version__ = '0.6.8'
 
 from .sampling import sample
 from .counting import count
