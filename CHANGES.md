@@ -1,3 +1,7 @@
+# 0.6.9 / 2020-08-13
+
+  * Bump version up for JOSS correction
+
 # 0.6.8 / 2020-08-13
 
   * Bump version up for JOSS
