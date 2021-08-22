@@ -1,10 +1,10 @@
 {
   "creators": [{
-    "name": "Ulf Hamster",
+    "name": "Ulf A. Hamster",
     "orcid": "0000-0002-0440-4868"
   }],
-  "title": "bwsample: Sampling and Evaluation of Best-Worst Scaling sets",
-  "description": "Sampling algorithm for best-worst scaling (BWS) sets, extracting pairs from evaluated BWS sets, count in dictionary of keys sparse matrix, and compute scores based on it.",
+  "title": "bwsample: Processing Best-Worst Scaling data",
+  "description": "bwsample is a Python package that provides algorithms to sample best-worst scaling sets (BWS sets), extract and count pairwise comparisons from user-evaluated BWS sets, and compute rankings and scores.",
   "license": "Apache-2.0",
   "upload_type": "software",
   "keywords": [
@@ -12,7 +12,6 @@
     "Best-Worst Scaling",
     "Pairwise Comparison",
     "Dictionary of Keys",
-    "Scoring",
-    "Logical Inference"
+    "Open-source"
   ]
 }
