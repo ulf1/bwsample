@@ -3,7 +3,6 @@
 [![bwsample](https://snyk.io/advisor/python/bwsample/badge.svg)](https://snyk.io/advisor/python/bwsample)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/context:python)
-[![Known Vulnerabilities](https://snyk.io/test/github/satzbeleg/bwsample/badge.svg)](https://snyk.io/test/github/satzbeleg/bwsample)
 
 
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
