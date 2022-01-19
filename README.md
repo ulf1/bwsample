@@ -230,4 +230,4 @@ Please contribute using [Github Flow](https://guides.github.com/introduction/flo
 This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - [433249742](https://gepris.dfg.de/gepris/projekt/433249742). Project duration: 2020-2023.
 
 ### Citation
-Please cite the peer-reviewed JOSS paper [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324)
+Please cite the peer-reviewed JOSS paper [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324) when using this software for any purpose.
