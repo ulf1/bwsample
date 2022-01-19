@@ -1,4 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/bwsample.svg)](https://badge.fury.io/py/bwsample)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324)
 [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
 [![Join the chat at https://gitter.im/satzbeleg/community](https://badges.gitter.im/satzbeleg/community.svg)](https://gitter.im/satzbeleg/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![bwsample](https://snyk.io/advisor/python/bwsample/badge.svg)](https://snyk.io/advisor/python/bwsample)
@@ -231,5 +232,5 @@ This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Researc
 ### Citation
 There are two ways to cite this software for academic purposes:
 
-1. Cite the peer-reviewed JOSS paper (submission pending)
+1. Cite the peer-reviewed JOSS paper [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324), or
 2. Cite Zenodo software publication. The DOIs are linked to a specific versions of the software . Please check the latest version here: [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
