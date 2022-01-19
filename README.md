@@ -230,7 +230,4 @@ Please contribute using [Github Flow](https://guides.github.com/introduction/flo
 This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - [433249742](https://gepris.dfg.de/gepris/projekt/433249742). Project duration: 2020-2023.
 
 ### Citation
-There are two ways to cite this software for academic purposes:
-
-1. Cite the peer-reviewed JOSS paper [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324), or
-2. Cite Zenodo software publication. The DOIs are linked to a specific versions of the software . Please check the latest version here: [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
+Please cite the peer-reviewed JOSS paper [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324)
