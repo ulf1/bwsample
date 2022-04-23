@@ -1,4 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/bwsample.svg)](https://badge.fury.io/py/bwsample)
+[![PyPi downloads](https://img.shields.io/pypi/dm/bwsample)](https://img.shields.io/pypi/dm/bwsample)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324)
 [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
 [![Join the chat at https://gitter.im/satzbeleg/community](https://badges.gitter.im/satzbeleg/community.svg)](https://gitter.im/satzbeleg/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
