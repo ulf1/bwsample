@@ -4,8 +4,7 @@
 [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
 [![Join the chat at https://gitter.im/satzbeleg/community](https://badges.gitter.im/satzbeleg/community.svg)](https://gitter.im/satzbeleg/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![bwsample](https://snyk.io/advisor/python/bwsample/badge.svg)](https://snyk.io/advisor/python/bwsample)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/context:python)
+
 
 
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
