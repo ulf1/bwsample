@@ -4,8 +4,7 @@
 [![DOI](https://zenodo.org/badge/335090754.svg)](https://zenodo.org/badge/latestdoi/335090754)
 [![Join the chat at https://gitter.im/satzbeleg/community](https://badges.gitter.im/satzbeleg/community.svg)](https://gitter.im/satzbeleg/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![bwsample](https://snyk.io/advisor/python/bwsample/badge.svg)](https://snyk.io/advisor/python/bwsample)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/satzbeleg/bwsample.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/satzbeleg/bwsample/context:python)
+
 
 
 # bwsample: Sampling and Evaluation of Best-Worst Scaling sets
@@ -21,7 +20,7 @@ The package `bwsample` addresses three areas:
 The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
 ```sh
-pip install bwsample>=0.6.7
+pip install "bwsample>=0.7.0"
 ```
 
 ## Overview
@@ -185,7 +184,7 @@ The implementations `ratio`, `pvalue`, `'btl'`, `'eigen'`, and `'trans'` are ful
 In order to run the Jupyter notebooks or want to work on this project (e.g. unit tests, syntax checks) you should install a Python virtual environment.
 
 ```sh
-python3.6 -m venv .venv
+python3.7 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt --no-cache-dir
@@ -204,8 +203,9 @@ pip install -r requirements-demo.txt --no-cache-dir
 Publish
 
 ```sh
-pandoc README.md --from markdown --to rst -s -o README.rst
+# pandoc README.md --from markdown --to rst -s -o README.rst
 python setup.py sdist 
+twine check dist/*
 twine upload -r pypi dist/*
 ```
 
