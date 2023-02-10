@@ -1,12 +1,16 @@
-# 0.6.9 / 2020-08-13
+# 0.7.0 / 2023-02-10
+
+  * Fix dependency problems
+
+# 0.6.9 / 2021-08-13
 
   * Bump version up for JOSS correction
 
-# 0.6.8 / 2020-08-13
+# 0.6.8 / 2021-08-13
 
   * Bump version up for JOSS
 
-# 0.6.5 / 2020-04-23
+# 0.6.5 / 2021-04-23
 
   * Test multiple python versions
   * Installation problems: remove pandoc from setup.py

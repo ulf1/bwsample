@@ -184,7 +184,7 @@ The implementations `ratio`, `pvalue`, `'btl'`, `'eigen'`, and `'trans'` are ful
 In order to run the Jupyter notebooks or want to work on this project (e.g. unit tests, syntax checks) you should install a Python virtual environment.
 
 ```sh
-python3.6 -m venv .venv
+python3.7 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt --no-cache-dir

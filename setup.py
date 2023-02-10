@@ -33,6 +33,6 @@ setup(
         'scipy>=1.5.4,<2',
         'scikit-learn>=0.24.1,<1'
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     zip_safe=True
 )
