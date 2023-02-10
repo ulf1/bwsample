@@ -22,16 +22,17 @@ setup(
     name='bwsample',
     version=get_version("bwsample/__init__.py"),
     description='Sampling algorithm for best-worst scaling sets.',
-    long_description=read('README.rst'),
+    long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     url='http://github.com/ulf1/bwsample',
     author='Ulf Hamster',
     author_email='554c46@gmail.com',
     license='Apache License 2.0',
     packages=['bwsample'],
     install_requires=[
-        'numpy>=1.19.5,<2',
-        'scipy>=1.5.4,<2',
-        'scikit-learn>=0.24.1,<1'
+        'numpy>=1.21.6,<2',
+        'scipy>=1.7.3,<2',
+        'scikit-learn>=1,<2'
     ],
     python_requires='>=3.7',
     zip_safe=True

@@ -20,7 +20,7 @@ The package `bwsample` addresses three areas:
 The `bwsample` [git repo](http://github.com/satzbeleg/bwsample) is available as [PyPi package](https://pypi.org/project/bwsample)
 
 ```sh
-pip install bwsample>=0.6.7
+pip install "bwsample>=0.7.0"
 ```
 
 ## Overview
@@ -203,8 +203,9 @@ pip install -r requirements-demo.txt --no-cache-dir
 Publish
 
 ```sh
-pandoc README.md --from markdown --to rst -s -o README.rst
+# pandoc README.md --from markdown --to rst -s -o README.rst
 python setup.py sdist 
+twine check dist/*
 twine upload -r pypi dist/*
 ```
 
