@@ -228,7 +228,23 @@ Please contribute using [Github Flow](https://guides.github.com/introduction/flo
 
 
 ### Acknowledgements
-This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - [433249742](https://gepris.dfg.de/gepris/projekt/433249742). Project duration: 2020-2023.
+The "Evidence" project was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - [433249742](https://gepris.dfg.de/gepris/projekt/433249742) (GU 798/27-1; GE 1119/11-1).
 
 ### Citation
 Please cite the peer-reviewed JOSS paper [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324) when using this software for any purpose.
+
+
+```
+@article{Hamster2021, 
+  author = {Ulf A. Hamster}, 
+  title = {`bwsample`: Processing Best-Worst Scaling data}, 
+  journal = {Journal of Open Source Software},
+  year = {2021}, 
+  volume = {6}, 
+  number = {64}, 
+  pages = {3324}, 
+  publisher = {The Open Journal}, 
+  doi = {10.21105/joss.03324}, 
+  url = {https://doi.org/10.21105/joss.03324}, 
+}
+```
