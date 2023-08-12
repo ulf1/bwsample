@@ -230,6 +230,10 @@ Please contribute using [Github Flow](https://guides.github.com/introduction/flo
 ### Acknowledgements
 The "Evidence" project was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - [433249742](https://gepris.dfg.de/gepris/projekt/433249742) (GU 798/27-1; GE 1119/11-1).
 
+### Maintenance
+- till 31.Aug.2023 (v0.1.1) the code repository was maintained within the DFG project [433249742](https://gepris.dfg.de/gepris/projekt/433249742)
+- since 01.Sep.2023 (v0.2.0) the code repository is maintained by [@ulf1](https://github.com/ulf1).
+
 ### Citation
 Please cite the peer-reviewed JOSS paper [![DOI](https://joss.theoj.org/papers/10.21105/joss.03324/status.svg)](https://doi.org/10.21105/joss.03324) when using this software for any purpose.
 
